@@ -1,9 +1,13 @@
-const moduleName = 'iaccounting';
+const moduleName = 'itask';
 const moduleVersion = 'v1';
 const urlBase = `/${moduleName}/${moduleVersion}`
 
 
 export default {
   urlBase: urlBase,
-  version: moduleVersion
+  version: moduleVersion, 
+  priority: `${urlBase}/priority`,
+  categories: `${urlBase}/categories`,
+  status: `${urlBase}/status`,
+  task: `${urlBase}/task`
 }
