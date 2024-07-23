@@ -1,7 +1,8 @@
 
 export default {
   priority: {
-    permission: 'itask.priority.manage',
+    //permission: 'itask.priority.manage',
+    permission: null,
     activated: true,
     authenticated: true,
     path: '/task/priority/index',
@@ -16,10 +17,11 @@ export default {
     }
   },
   categories: {
-    permission: 'itask.category.manage',
+    //permission: 'itask.category.manage',
+    permission: null,
     activated: true,
     authenticated: true,
-    path: '/task/category/index',
+    path: '/task/categories/index',
     name: 'qtask.admin.category',
     crud : import('modules/qtask/_crud/categories'),
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
