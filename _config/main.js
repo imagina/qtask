@@ -1,5 +1,10 @@
 export default {
   moduleName: 'itask',
   //Entities
-  entityNames: {},
+  entityNames: {
+    priority: 'priority',
+    categories: 'categories',
+    status: 'status',
+    task: 'task',
+  },
 }
