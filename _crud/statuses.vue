@@ -14,7 +14,7 @@ export default {
         apiRoute: 'apiRoutes.qtask.statuses',
         permission: 'itask.statuses',        
         create: {
-          title: 'New Status',
+          title: this.$tr('itask.cms.newStatus')
         },
         read: {
           columns: [
@@ -22,7 +22,7 @@ export default {
             {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth'},
             {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'rigth'},
             {name: 'sortOrder', label: this.$tr('isite.cms.form.sortOrder'), field: 'sortOrder', align: 'rigth'},
-            {name: 'color', label: this.$tr('isite.cms.form.color'), field: 'color', align: 'rigth'},
+            {name: 'color', label: this.$tr('itask.cms.form.color'), field: 'color', align: 'rigth'},
             {name: 'icon', label: this.$tr('isite.cms.form.icon'), field: 'icon', align: 'rigth'},            
             {
               name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
@@ -33,7 +33,7 @@ export default {
               format: val => val ? this.$trd(val) : '-',
             },
             {
-              name: 'deleted_at', label: this.$tr('isite.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
+              name: 'deleted_at', label: this.$tr('itask.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
             },
             {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
@@ -41,7 +41,7 @@ export default {
           filters: {}
         },
         update: {
-          title: 'update status',          
+          title: this.$tr('itask.cms.updateStatus')
         },
         delete: true,
         formLeft: {

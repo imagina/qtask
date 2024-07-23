@@ -9,7 +9,7 @@ export default {
     crud : import('modules/qtask/_crud/priorities'),
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
     layout: () => import('layouts/master.vue'),
-    title: 'priorities',
+    title: 'itask.cms.sidebar.adminPriorities',
     icon: 'fa-light fa-circle-exclamation',
     subHeader: {
         refresh: true,
@@ -24,7 +24,7 @@ export default {
     crud : import('modules/qtask/_crud/categories'),
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
     layout: () => import('layouts/master.vue'),
-    title: 'categories',
+    title: 'itask.cms.sidebar.adminCategories',
     icon: 'fa-light fa-layer-group',
     subHeader: {
         refresh: true,
@@ -39,7 +39,7 @@ export default {
     crud : import('modules/qtask/_crud/statuses'),
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
     layout: () => import('layouts/master.vue'),
-    title: 'statuses',
+    title: 'itask.cms.sidebar.adminStatuses',
     icon: 'fa-light fa-list-check',
     subHeader: {
         refresh: true,
@@ -54,7 +54,7 @@ export default {
     crud : import('modules/qtask/_crud/tasks'),
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
     layout: () => import('layouts/master.vue'),
-    title: 'tasks',
+    title: 'itask.cms.sidebar.adminTasks',
     icon: 'fa-light fa-list-check',
     subHeader: {
         refresh: true,

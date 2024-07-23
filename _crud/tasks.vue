@@ -14,7 +14,7 @@ export default {
         apiRoute: 'apiRoutes.qtask.tasks',
         permission: 'iblog.categories',
         create: {
-          title: 'new task',
+          title: this.$tr('itask.cms.newTask'),
         },
         read: {
           columns: [
@@ -23,11 +23,11 @@ export default {
             {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'description'},
             {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'startDate'},
             {name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'endDate'},
-            {name: 'statusId', label: this.$tr('isite.cms.form.statusId'), field: 'statusId', align: 'statusId'},
-            {name: 'priorityId', label: this.$tr('isite.cms.form.priorityId'), field: 'priorityId', align: 'priorityId'},
-            {name: 'estimatedTime', label: this.$tr('isite.cms.form.estimatedTime'), field: 'estimatedTime', align: 'estimatedTime'},
-            {name: 'assignedToId', label: this.$tr('isite.cms.form.assignedToId'), field: 'assignedToId', align: 'assignedToId'},
-            {name: 'categoryId', label: this.$tr('isite.cms.form.categoryId'), field: 'categoryId', align: 'categoryId'},
+            {name: 'statusId', label: this.$tr('isite.cms.form.status'), field: 'statusId', align: 'statusId'},
+            {name: 'priorityId', label: this.$tr('itask.cms.form.priority'), field: 'priorityId', align: 'priorityId'},
+            {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'estimatedTime'},
+            {name: 'assignedToId', label: this.$tr('itask.cms.form.assigned'), field: 'assignedToId', align: 'assignedToId'},
+            {name: 'categoryId', label: this.$tr('isite.cms.form.category'), field: 'categoryId', align: 'categoryId'},
             {
               name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
@@ -37,7 +37,7 @@ export default {
               format: val => val ? this.$trd(val) : '-',
             },
             {
-              name: 'deleted_at', label: this.$tr('isite.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
+              name: 'deleted_at', label: this.$tr('itask.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
             },
             {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
@@ -45,7 +45,7 @@ export default {
           filters: {}
         },
         update: {
-          title: this.$tr('iblog.cms.updateCategory'),
+          title: this.$tr('itask.cms.updateTask'),
         },
         delete: true,
         formLeft: {
@@ -78,7 +78,7 @@ export default {
             value: [],
             type: 'select',
             props: {
-              label: 'assigned to',
+              label: this.$tr('itask.cms.form.assigned'),
               //multiple: true,
               //useChips: true,
               useInput: true,
@@ -98,28 +98,28 @@ export default {
             value: '',            
             type: 'date',
             props: {
-              label: 'Start date'
+              label: this.$tr('isite.cms.form.startDate')
              }
           },        
           endDate: {
             value: '',            
             type: 'date',
             props: {
-              label: 'End date',
+              label: this.$tr('isite.cms.form.endDate'),
             }
           },
           estimatedTime: {
             value: '',            
             type: 'input',
             props: {
-              label: 'estimatedTime',
+              label: this.$tr('itask.cms.form.estimatedTime'),
             }
           },
           priorityId: {
             value: [],
             type: 'select',
             props: {
-              label: 'priority ',             
+              label: this.$tr('itask.cms.form.priority'),             
               useInput: true,
               rules: [
                 val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
@@ -137,7 +137,7 @@ export default {
             value: [],
             type: 'select',
             props: {
-              label: 'categoryId ',             
+              label: this.$tr('isite.cms.form.category'),
               useInput: true,
               rules: [
                 val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
@@ -155,7 +155,7 @@ export default {
             value: [],
             type: 'select',
             props: {
-              label: 'statusId ',             
+              label: this.$tr('isite.cms.form.status'),             
               useInput: true,
               rules: [
                 val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')

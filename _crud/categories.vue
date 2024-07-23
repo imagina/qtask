@@ -14,7 +14,7 @@ export default {
         apiRoute: 'apiRoutes.qtask.categories',
         permission: 'itask.categories',
         create: {
-          title: 'New Category',
+          title: this.$tr('isite.cms.newCategory')
         },
         read: {
           columns: [
@@ -22,15 +22,26 @@ export default {
             {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth'},
             {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'rigth'},
             {name: 'systemName', label: this.$tr('isite.cms.form.systemName'), field: 'systemName', align: 'rigth'},
-            {name: 'parentId', label: this.$tr('isite.cms.form.parentId'), field: 'parentId', align: 'rigth'},
-            {name: 'options', label: this.$tr('isite.cms.form.options'), field: 'options', align: 'rigth'},
-            
+            {name: 'parentId', label: this.$tr('isite.cms.form.parent'), field: 'parentId', align: 'rigth'},
+            {name: 'options', label: this.$tr('isite.cms.form.option'), field: 'options', align: 'rigth'},
+            {
+              name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
+              format: val => val ? this.$trd(val) : '-',
+            },
+            {
+              name: 'updated_at', label: this.$tr('isite.cms.form.updatedAt'), field: 'updatedAt', align: 'left',
+              format: val => val ? this.$trd(val) : '-',
+            },
+            {
+              name: 'deleted_at', label: this.$tr('itask.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
+              format: val => val ? this.$trd(val) : '-',
+            },            
             {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
           ],          
           filters: {}
         },
         update: {
-          title: 'Update category',          
+          title: this.$tr('isite.cms.updateCategory'),          
         },
         delete: true,
         formLeft: {
@@ -63,21 +74,21 @@ export default {
             value: '',            
             type: 'input',
             props: {
-              label: 'system name',
+              label: this.$tr('isite.cms.form.systemName'),
             }
           },
           parentId: {
             value: '',            
             type: 'input',
             props: {
-              label: 'parent id',
+              label: this.$tr('isite.cms.form.parent'),
             }
           },
-          statoptionsusId: {
+          options: {
             value: 0,
             type: 'select',
             props: {
-              label: 'Options',
+              label: this.$tr('isite.cms.form.option'),
               options: [
                 {label: 'option 0', value: 0},
               ],
