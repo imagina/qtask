@@ -10,9 +10,8 @@ export default {
   computed: {
     crudData() {
       return {
-        crudId: this.crudId,
-        entityName: config("main.qblog.entityNames.category"),
-        apiRoute: 'apiRoutes.qblog.categories',
+        crudId: this.crudId,        
+        apiRoute: 'apiRoutes.qtask.priorities',
         permission: 'iblog.categories',
         create: {
           title: 'new task',
@@ -38,12 +37,10 @@ export default {
             },
             {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
           ],
-          requestParams: {include: 'parent,qrs'},
           filters: {}
         },
         update: {
           title: this.$tr('iblog.cms.updateCategory'),
-          requestParams: {include: 'parent'}
         },
         delete: true,
         formLeft: {
@@ -74,19 +71,15 @@ export default {
           },
           color: {
             value: '',
-            isTranslatable: true,
-            type: 'input',
+            type: 'inputColor',
             props: {
-              label: 'color',
+              label: 'Color'
             }
           },
           icon: {
             value: '',
-            isTranslatable: true,
-            type: 'input',
-            props: {
-              label: 'icon',
-            }
+            type: 'selectIcon',
+            props: {label: 'Icon'}
           },
           
         },

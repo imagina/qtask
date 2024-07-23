@@ -12,7 +12,7 @@ export default {
       return {
         crudId: this.crudId,
         entityName: config("main.qblog.entityNames.category"),
-        apiRoute: 'apiRoutes.qblog.categories',
+        apiRoute: 'apiRoutes.qtask.categories',
         permission: 'iblog.categories',
         create: {
           title: 'new task',

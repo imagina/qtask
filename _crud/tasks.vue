@@ -11,8 +11,7 @@ export default {
     crudData() {
       return {
         crudId: this.crudId,
-        entityName: config("main.qblog.entityNames.category"),
-        apiRoute: 'apiRoutes.qblog.categories',
+        apiRoute: 'apiRoutes.qtask.tasks',
         permission: 'iblog.categories',
         create: {
           title: 'new task',
@@ -42,8 +41,7 @@ export default {
               format: val => val ? this.$trd(val) : '-',
             },
             {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
-          ],
-          requestParams: {include: 'parent,qrs'},
+          ],          
           filters: {}
         },
         update: {
@@ -75,32 +73,51 @@ export default {
               ],
             }
           },
-          startDate: {
-            value: '',            
-            type: 'input',
-            props: {
-              label: 'start date',
-            }
-          },
-          endDate: {
-            value: '',            
-            type: 'input',
-            props: {
-              label: 'end date',
-            }
-          },
-          statusId: {
-            value: 0,
+        },
+        formRight: {          
+          assignedToId: {
+            value: [],
             type: 'select',
             props: {
-              label: 'priority id',
-              options: [
-                {label: this.$tr('isite.cms.label.disabled'), value: 0},
+              label: 'assignedToId*',
+              //multiple: true,
+              //useChips: true,
+              useInput: true,
+              rules: [
+                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
               ],
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.quser.users',
+              //filterByQuery: true,
+              select: {
+                label: 'email',
+                id: item => `${item.id}::${item.email}`,
+                sublabel: 'fullName'
+              }
             }
           },
-        },
-        formRight: {
+          startDate: {
+            value: '',            
+            type: 'date',
+            props: {
+              label: 'Start date'
+             }
+          },        
+          endDate: {
+            value: '',            
+            type: 'date',
+            props: {
+              label: 'End date',
+            }
+          },
+          estimatedTime: {
+            value: '',            
+            type: 'input',
+            props: {
+              label: 'estimatedTime',
+            }
+          },
           priorityId: {
             value: 0,
             type: 'select',
@@ -111,28 +128,21 @@ export default {
               ],
             }
           },
-          estimatedTime: {
-            value: '',            
-            type: 'input',
-            props: {
-              label: 'estimatedTime',
-            }
-          },
-          assignedToId: {
-            value: 0,
-            type: 'select',
-            props: {
-              label: 'assignedToId',
-              options: [
-                {label: this.$tr('isite.cms.label.disabled'), value: 0},
-              ],
-            }
-          },
           categoryId: {
             value: 0,
             type: 'select',
             props: {
               label: 'categoryId',
+              options: [
+                {label: this.$tr('isite.cms.label.disabled'), value: 0},
+              ],
+            }
+          },
+          statusId: {
+            value: 0,
+            type: 'select',
+            props: {
+              label: 'statusId id',
               options: [
                 {label: this.$tr('isite.cms.label.disabled'), value: 0},
               ],

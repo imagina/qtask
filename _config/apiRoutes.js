@@ -6,8 +6,9 @@ const urlBase = `/${moduleName}/${moduleVersion}`
 export default {
   urlBase: urlBase,
   version: moduleVersion, 
-  priority: `${urlBase}/priority`,
+  priorities: `${urlBase}/priorities`,
   categories: `${urlBase}/categories`,
-  status: `${urlBase}/status`,
-  task: `${urlBase}/task`
+  statuses: `${urlBase}/statuses`,
+  tasks: `${urlBase}/tasks`, 
+  timelogs: `${urlBase}/timelogs`,
 }

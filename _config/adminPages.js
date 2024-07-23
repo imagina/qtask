@@ -1,63 +1,63 @@
 
 export default {
-  priority: {
-    //permission: 'itask.priority.manage',
+  priorities: {
+    //permission: 'itask.priorities.manage',
     permission: null,
     activated: true,
     authenticated: true,
-    path: '/task/priority/index',
-    name: 'qtask.admin.priority',
-    crud : import('modules/qtask/_crud/priority'),
+    path: '/task/priorities/index',
+    name: 'qtask.admin.prioritiesy',
+    crud : import('modules/qtask/_crud/priorities'),
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
     layout: () => import('layouts/master.vue'),
-    title: 'priority',
+    title: 'priorities',
     icon: 'fa-light fa-list-check',
     subHeader: {
         refresh: true,
     }
   },
   categories: {
-    //permission: 'itask.category.manage',
+    //permission: 'itask.categories.manage',
     permission: null,
     activated: true,
     authenticated: true,
     path: '/task/categories/index',
-    name: 'qtask.admin.category',
+    name: 'qtask.admin.categories',
     crud : import('modules/qtask/_crud/categories'),
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
     layout: () => import('layouts/master.vue'),
-    title: 'category',
+    title: 'categories',
     icon: 'fa-light fa-list-check',
     subHeader: {
         refresh: true,
     }
   },
-  status: {
-    permission: 'itask.status.manage',
+  statuses: {
+    permission: 'itask.statuses.manage',
     activated: true,
     authenticated: true,
-    path: '/task/status/index',
-    name: 'qtask.admin.status',
-    crud : import('modules/qtask/_crud/status'),
+    path: '/task/statuses/index',
+    name: 'qtask.admin.statuses',
+    crud : import('modules/qtask/_crud/statuses'),
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
     layout: () => import('layouts/master.vue'),
-    title: 'status',
+    title: 'statuses',
     icon: 'fa-light fa-list-check',
     subHeader: {
         refresh: true,
     }
   },
-  task: {
-    //permission: 'itask.task.manage',
+  tasks: {
+    //permission: 'itask.tasks.manage',
     permission: null,
     activated: true,
     authenticated: true,
     path: '/task/tasks/index',
-    name: 'qtask.admin.task',
-    crud : import('modules/qtask/_crud/task'),
+    name: 'qtask.admin.tasks',
+    crud : import('modules/qtask/_crud/tasks'),
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
     layout: () => import('layouts/master.vue'),
-    title: 'task',
+    title: 'tasks',
     icon: 'fa-light fa-list-check',
     subHeader: {
         refresh: true,
