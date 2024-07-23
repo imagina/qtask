@@ -1,8 +1,7 @@
 
 export default {
   priorities: {
-    //permission: 'itask.priorities.manage',
-    permission: null,
+    permission: 'itask.priorities.manage',
     activated: true,
     authenticated: true,
     path: '/task/priorities/index',
@@ -11,14 +10,13 @@ export default {
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
     layout: () => import('layouts/master.vue'),
     title: 'priorities',
-    icon: 'fa-light fa-list-check',
+    icon: 'fa-light fa-circle-exclamation',
     subHeader: {
         refresh: true,
     }
   },
   categories: {
-    //permission: 'itask.categories.manage',
-    permission: null,
+    permission: 'itask.categories.manage',    
     activated: true,
     authenticated: true,
     path: '/task/categories/index',
@@ -27,7 +25,7 @@ export default {
     page: () => import('modules/qcrud/_pages/admin/crudPage'),
     layout: () => import('layouts/master.vue'),
     title: 'categories',
-    icon: 'fa-light fa-list-check',
+    icon: 'fa-light fa-layer-group',
     subHeader: {
         refresh: true,
     }
@@ -48,8 +46,7 @@ export default {
     }
   },
   tasks: {
-    //permission: 'itask.tasks.manage',
-    permission: null,
+    permission: 'itask.tasks.manage',
     activated: true,
     authenticated: true,
     path: '/task/tasks/index',

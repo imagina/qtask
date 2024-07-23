@@ -65,7 +65,6 @@ export default {
             name : "description",
             value: '',
             type: 'html',
-            isTranslatable: true,
             props: {
               label: `${this.$tr('isite.cms.form.description')}*`,
               rules: [
@@ -79,7 +78,7 @@ export default {
             value: [],
             type: 'select',
             props: {
-              label: 'assignedToId*',
+              label: 'assigned to',
               //multiple: true,
               //useChips: true,
               useInput: true,
@@ -88,12 +87,10 @@ export default {
               ],
             },
             loadOptions: {
-              apiRoute: 'apiRoutes.quser.users',
-              //filterByQuery: true,
+              apiRoute: 'apiRoutes.quser.users',              
               select: {
                 label: 'email',
-                id: item => `${item.id}::${item.email}`,
-                sublabel: 'fullName'
+                id: item => `${item.id}`                
               }
             }
           },
@@ -119,33 +116,57 @@ export default {
             }
           },
           priorityId: {
-            value: 0,
+            value: [],
             type: 'select',
             props: {
-              label: 'priority id',
-              options: [
-                {label: this.$tr('isite.cms.label.disabled'), value: 0},
+              label: 'priority ',             
+              useInput: true,
+              rules: [
+                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
               ],
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qtask.priorities',
+              select: {
+                label: 'title',
+                id: item => `${item.id}`
+              }
             }
           },
           categoryId: {
-            value: 0,
+            value: [],
             type: 'select',
             props: {
-              label: 'categoryId',
-              options: [
-                {label: this.$tr('isite.cms.label.disabled'), value: 0},
+              label: 'categoryId ',             
+              useInput: true,
+              rules: [
+                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
               ],
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qtask.categories',
+              select: {
+                label: 'title',
+                id: item => `${item.id}`
+              }
             }
           },
           statusId: {
-            value: 0,
+            value: [],
             type: 'select',
             props: {
-              label: 'statusId id',
-              options: [
-                {label: this.$tr('isite.cms.label.disabled'), value: 0},
+              label: 'statusId ',             
+              useInput: true,
+              rules: [
+                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
               ],
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qtask.statuses',
+              select: {
+                label: 'title',
+                id: item => `${item.id}`
+              }
             }
           },
         }

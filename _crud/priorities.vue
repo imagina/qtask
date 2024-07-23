@@ -12,9 +12,9 @@ export default {
       return {
         crudId: this.crudId,        
         apiRoute: 'apiRoutes.qtask.priorities',
-        permission: 'iblog.categories',
+        permission: 'itask.priorities',
         create: {
-          title: 'new task',
+          title: 'New Proirity',
         },
         read: {
           columns: [
@@ -40,7 +40,7 @@ export default {
           filters: {}
         },
         update: {
-          title: this.$tr('iblog.cms.updateCategory'),
+          title: 'Update priority',
         },
         delete: true,
         formLeft: {
