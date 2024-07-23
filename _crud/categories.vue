@@ -11,11 +11,10 @@ export default {
     crudData() {
       return {
         crudId: this.crudId,
-        entityName: config("main.qblog.entityNames.category"),
         apiRoute: 'apiRoutes.qtask.categories',
-        permission: 'iblog.categories',
+        permission: 'itask.categories',
         create: {
-          title: 'new task',
+          title: 'New Category',
         },
         read: {
           columns: [
@@ -27,13 +26,11 @@ export default {
             {name: 'options', label: this.$tr('isite.cms.form.options'), field: 'options', align: 'rigth'},
             
             {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
-          ],
-          requestParams: {include: 'parent,qrs'},
+          ],          
           filters: {}
         },
         update: {
-          title: this.$tr('iblog.cms.updateCategory'),
-          requestParams: {include: 'parent'}
+          title: 'Update category',          
         },
         delete: true,
         formLeft: {
@@ -63,30 +60,29 @@ export default {
             }
           },
           systemName: {
-            value: '',
-            isTranslatable: true,
+            value: '',            
             type: 'input',
             props: {
               label: 'system name',
             }
           },
           parentId: {
-            value: '',
-            isTranslatable: true,
+            value: '',            
             type: 'input',
             props: {
               label: 'parent id',
             }
           },
-          options: {
-            value: '',
-            isTranslatable: true,
-            type: 'input',
+          statoptionsusId: {
+            value: 0,
+            type: 'select',
             props: {
-              label: 'options',
+              label: 'Options',
+              options: [
+                {label: 'option 0', value: 0},
+              ],
             }
           },
-          
         },
         formRight: {}
       }
