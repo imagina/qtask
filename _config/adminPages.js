@@ -66,7 +66,7 @@ export default {
     authenticated: true,
     path: '/task/tasksList/index',
     name: 'qtask.admin.tasks',
-    ///crud : import('modules/qtask/_crud/tasks'),
+    crud : import('modules/qtask/_crud/tasks'),
     page: () => import('modules/qtask/_pages/tasksList'),
     layout: () => import('layouts/master.vue'),
     title: 'tasks list',
