@@ -9,7 +9,8 @@ export default [
         pages.qtask.tasks, 
         pages.qtask.priorities, 
         pages.qtask.categories, 
-        pages.qtask.statuses, 
+        pages.qtask.statuses,
+        pages.qtask.tasksList,
       ]
     },
   ]
