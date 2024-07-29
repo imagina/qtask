@@ -1,21 +1,22 @@
 <template>  
   <div>        
-    <dynamicTable 
-     :columns="columns"
-     :rows="rows"
-     :actions="actions"
+    <dynamicList
+      :title="title"
+      :columns="columns"
+      :rows="rows"
+      :actions="actions"
     />
     
   </div>
 </template>
 <script>
 //Components
-import dynamicTable from 'modules/qsite/_components/master/dynamicTable'
+import dynamicList from 'modules/qsite/_components/master/dynamicList'
 
 export default {
   props: {},
   components: {
-    dynamicTable
+    dynamicList
   },
   watch: {},
   mounted() {
@@ -78,7 +79,7 @@ export default {
         },
         {
           name: 'actions', label: this.$tr('isite.cms.form.actions'), 
-          align: 'left',
+          align: 'center',
          
         },
       ],        
