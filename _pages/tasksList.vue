@@ -1,122 +1,127 @@
 <template>  
-  <div>    
-    <component :is="componentCrudData" ref="componentCrudData" />
-    <q-table
-      flat bordered
-      title="DynamicTable"
-      :rows="rows"
-      :columns="columns"
-      row-key="name"
-      binary-state-sort      
-    >
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td
-            v-for="col in props.cols"
-            :key="col.name"
-            :props="props"
-          >  
-            <!--cell content-->
-            <div class="ellipsis-2-lines" style="max-width: 300px;" v-html="props.row[col.name]"></div>        
-            
-            <q-popup-edit
-              v-if="col?.isEditable || false"
-              v-model="props.row[col.name]"
-              v-slot="scope"              
-              no-caps
-              @update:model-value="(value) => updateRow({col: col, row: props.row})"
-            >
-            <p>Update {{ col.label }} :</p>
-            <div class="q-py-sm">
-              <dynamic-field v-model="scope.value" :field="col['dynamicField']"/>
-              <q-btn
-                label="Close"
-                no-caps
-                flat dense
-                @click.stop.prevent="scope.cancel"
-              />
-
-              <q-btn
-                label="Update"
-                no-caps
-                flat dense
-                @click.stop.prevent="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </div>
-            
-            </q-popup-edit>
-          </q-td>        
-        </q-tr>
-      </template>
-    </q-table>
+  <div>        
+    <dynamicTable 
+     :columns="columns"
+     :rows="rows"
+     :actions="actions"
+    />
+    
   </div>
 </template>
 <script>
 //Components
-import {ref, markRaw} from 'vue';
+import dynamicTable from 'modules/qsite/_components/master/dynamicTable'
 
 export default {
   props: {},
-  components: {},
+  components: {
+    dynamicTable
+  },
   watch: {},
   mounted() {
     this.$nextTick(function () {
-      this.init()
+      //this.init()
     })
   },
   data() {
     return {      
-      loading: false,
-      crudData: null,
-      componentCrudData: null,
-      columns: [],
-      rows: []
-    }
-  },
-  computed: {
-  },
-  methods: {
-    async init(){
-      await this.getCrudData()
-      await this.getData()      
-    },
-    getCrudModule(){
-      let crud = this.$route.meta.crud
-      return crud
-    },
-    async getCrudData(){
-      const crudComponent  = await this.getCrudModule()
-      if (crudComponent.default) this.componentCrudData = markRaw(crudComponent.default);
-      this.$nextTick(function() {
-        if (this.$refs.componentCrudData && this.$refs.componentCrudData.crudData) {
-          this.crudData = this.$clone(this.$refs.componentCrudData.crudData); //asing crudData to params           
-          this.columns = this.crudData.read.columns || []
-
-          const dynamicFields = {...this.crudData.formLeft, ...this.crudData.formRight}
-          //add dynamicField to column if editable
-          this.columns.forEach(element => {
-            if(element?.isEditable){                
-              element['dynamicField'] = {...dynamicFields[element.name]}
-            }              
-          });
-          
-        }
-      })
-    },
-    getData(){
-      const rows = [
+      loading: false,  
+      title: "DynamicTable",
+      columns: [
+        {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
+        {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth', 
+          isEditable: true, 
+          dynamicField: {
+            value: '',
+            type: 'input',
+            props: {
+              label: `${this.$tr('isite.cms.form.title')}*`,
+              rules: [
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+          },
+        },
+        {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'description', 
+          style: 'width: 200px',          
+          isEditable: true,           
+          dynamicField: {
+            name : "description",
+            value: '',
+            type: 'html',
+            props: {
+              label: `${this.$tr('isite.cms.form.description')}*`,
+              rules: [
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            }
+          },
+        },
+        {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'startDate', isEditable: true},
+        {name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'endDate', isEditable: true},
+        {name: 'statusId', label: this.$tr('isite.cms.form.status'), field: 'statusId', align: 'statusId', isEditable: true},
+        {name: 'priorityId', label: this.$tr('itask.cms.form.priority'), field: 'priorityId', align: 'priorityId', isEditable: true},
+        {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'estimatedTime', isEditable: true},
+        {name: 'assignedToId', label: this.$tr('itask.cms.form.assigned'), field: 'assignedToId', align: 'assignedToId', isEditable: true},
+        {name: 'categoryId', label: this.$tr('isite.cms.form.category'), field: 'categoryId', align: 'categoryId', isEditable: true},
+        {
+          name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
+          format: val => val ? this.$trd(val) : '-',
+        },
+        {
+          name: 'updated_at', label: this.$tr('isite.cms.form.updatedAt'), field: 'updatedAt', align: 'left',
+          format: val => val ? this.$trd(val) : '-',
+        },
+        {
+          name: 'deleted_at', label: this.$tr('itask.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
+          format: val => val ? this.$trd(val) : '-',
+        },
+        {
+          name: 'actions', label: this.$tr('isite.cms.form.actions'), 
+          align: 'left',
+         
+        },
+      ],        
+      rows: [
         {
           id: 1, 
           title: "new task", 
           startDate: "",           
         },
-      ];
-      this.rows = ref(rows)
-    },
-    updateRow(value){
-      console.warn('update row ===>> ', value)
+        {
+          id: 2, 
+          title: "new task 2", 
+          startDate: "",           
+        },
+      ],
+
+      actions: [
+        {//Edit action
+          icon: 'fa-light fa-pencil',
+          name: 'edit',
+          sortOrder: 99,
+          color: 'red',
+          label: this.$tr('isite.cms.label.edit'),
+          action: (item) => {
+            console.warn('edit', item.id)
+          }
+        },
+        {//Delete action
+          icon: 'fa-light fa-trash-can',
+          name: 'delete',
+          sortOrder: 99,
+          color: 'red',
+          label: this.$tr('isite.cms.label.delete'),          
+          action: (item) => {
+            console.warn('delete', item.id)
+          }
+        },
+      ]      
     }
+  },
+  computed: {
+  },
+  methods: {
   }
 }
 </script>
