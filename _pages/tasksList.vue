@@ -4,18 +4,22 @@
       :api-route="apiRoute"
       :title="title"
       :columns="columns"
-      :actions="actions"      
+      :actions="actions"
+      :permission="permission"
     />
   </div>
 </template>
 <script>
 //Components
 import dynamicList from 'modules/qsite/_components/master/dynamicList'
+import redCard from 'modules/qtask/_components/redCard'
+import {markRaw} from 'vue'
 
 export default {
   props: {},
   components: {
-    dynamicList
+    dynamicList, 
+    redCard
   },
   watch: {},
   mounted() {
@@ -33,6 +37,7 @@ export default {
         {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
         {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth', 
           isEditable: true, 
+          
           dynamicField: {
             value: '',
             type: 'input',
@@ -43,6 +48,10 @@ export default {
               ],
             },
           },
+          contentType: {
+            component: redCard
+          }          
+          
         },
         {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'description', 
           style: 'width: 200px',          
@@ -57,9 +66,15 @@ export default {
                 val => !!val || this.$tr('isite.cms.message.fieldRequired')
               ],
             }
-          },
+          },          
         },
-        {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'startDate', isEditable: true},
+        {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'startDate', isEditable: true,
+          contentType: {
+            content: (data) => {
+              return `<span style="color: #c10015"><i class="fa-solid fa-circle-5"></i> ${data}</span>`
+            }
+          }
+        },
         {name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'endDate', isEditable: true},
         {name: 'statusId', label: this.$tr('isite.cms.form.status'), field: 'statusId', align: 'statusId', isEditable: true},
         {name: 'priorityId', label: this.$tr('itask.cms.form.priority'), field: 'priorityId', align: 'priorityId', isEditable: true},

@@ -65,11 +65,11 @@ export default {
     activated: true,
     authenticated: true,
     path: '/task/tasksList/index',
-    name: 'qtask.admin.tasks',
+    name: 'qtask.admin.tasksList',
     //crud : import('modules/qtask/_crud/tasks'),
     page: () => import('modules/qtask/_pages/tasksList'),
     layout: () => import('layouts/master.vue'),
-    title: 'tasks list',
+    title: 'Tasks DynamicList',
     icon: 'fa-light fa-list-check',
     subHeader: {
         refresh: true,
