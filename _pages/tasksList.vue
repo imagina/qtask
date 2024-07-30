@@ -32,12 +32,10 @@ export default {
       loading: false,  
       title: "DynamicTable 2",
       apiRoute: 'apiRoutes.qtask.tasks',
-      permission: 'itask.categories',
+      permission: 'itask.tasks',
       columns: [
         {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
         {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth', 
-          isEditable: true, 
-          
           dynamicField: {
             value: '',
             type: 'input',
@@ -54,8 +52,7 @@ export default {
           
         },
         {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'description', 
-          style: 'width: 200px',          
-          isEditable: true,           
+          style: 'width: 200px',
           dynamicField: {
             name : "description",
             value: '',
@@ -68,19 +65,34 @@ export default {
             }
           },          
         },
-        {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'startDate', isEditable: true,
+        {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'startDate',
           contentType: {
             content: (data) => {
               return `<span style="color: #c10015"><i class="fa-solid fa-circle-5"></i> ${data}</span>`
             }
+          }, 
+          dynamicField: {          
+            value: '',            
+            type: 'date',
+            props: {
+              label: this.$tr('isite.cms.form.startDate'),
+            }
           }
         },
-        {name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'endDate', isEditable: true},
-        {name: 'statusId', label: this.$tr('isite.cms.form.status'), field: 'statusId', align: 'statusId', isEditable: true},
-        {name: 'priorityId', label: this.$tr('itask.cms.form.priority'), field: 'priorityId', align: 'priorityId', isEditable: true},
-        {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'estimatedTime', isEditable: true},
-        {name: 'assignedToId', label: this.$tr('itask.cms.form.assigned'), field: 'assignedToId', align: 'assignedToId', isEditable: true},
-        {name: 'categoryId', label: this.$tr('isite.cms.form.category'), field: 'categoryId', align: 'categoryId', isEditable: true},
+        {name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'endDate', 
+          dynamicField: {          
+            value: '',            
+            type: 'date',
+            props: {
+              label: this.$tr('isite.cms.form.endDate'),
+            }
+          }
+        },
+        {name: 'statusId', label: this.$tr('isite.cms.form.status'), field: 'statusId', align: 'statusId'},
+        {name: 'priorityId', label: this.$tr('itask.cms.form.priority'), field: 'priorityId', align: 'priorityId'},
+        {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'estimatedTime'},
+        {name: 'assignedToId', label: this.$tr('itask.cms.form.assigned'), field: 'assignedToId', align: 'assignedToId'},
+        {name: 'categoryId', label: this.$tr('isite.cms.form.category'), field: 'categoryId', align: 'categoryId'},
         {
           name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
           format: val => val ? this.$trd(val) : '-',
