@@ -1,12 +1,11 @@
 <template>  
-  <div>        
+  <div>
     <dynamicList
+      :api-route="apiRoute"
       :title="title"
       :columns="columns"
-      :rows="rows"
-      :actions="actions"
+      :actions="actions"      
     />
-    
   </div>
 </template>
 <script>
@@ -27,7 +26,9 @@ export default {
   data() {
     return {      
       loading: false,  
-      title: "DynamicTable",
+      title: "DynamicTable 2",
+      apiRoute: 'apiRoutes.qtask.tasks',
+      permission: 'itask.categories',
       columns: [
         {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
         {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth', 
@@ -83,18 +84,7 @@ export default {
          
         },
       ],        
-      rows: [
-        {
-          id: 1, 
-          title: "new task", 
-          startDate: "",           
-        },
-        {
-          id: 2, 
-          title: "new task 2", 
-          startDate: "",           
-        },
-      ],
+      
 
       actions: [
         {//Edit action
