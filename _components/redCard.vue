@@ -1,13 +1,8 @@
 <template>
-  <div>    
-    <q-chip 
-      :label="data"
-      @click="() => {console.log('click');$emit('click', {row, col}) }"
-    />
-    
-    <q-badge outline align="middle" color="red">
-      {{ data }}
-    </q-badge>
+  <div 
+    :style="{ 'color': row['category']?.options?.color ? row['category']?.options?.color : '#000000' }" 
+    class="text-h6">
+    {{ data }}    
   </div>
 </template>
 <script lang="ts">
