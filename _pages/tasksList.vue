@@ -14,16 +14,15 @@
           expand-separator
           default-opened
         >
-        <template v-slot:header>
-          <span class="text-h6">
-            This week: 1 expired task
-          </span>
+        <template v-slot:header>          
+          <div class="row text-primary text-weight-bold ellipsis title-content items-center">
+            <label style="font-size: 20px;">This week - {{ thisWeekLabel }}</label>
+          </div>
         </template>
           <q-card>
             <q-card-section class="q-py-none q-my-none">
               <dynamicList
                 ref="thisWeekList"
-                :title="thisWeekLabel"
                 :api-route="apiRoute"
                 :columns="read.columns"
                 :actions="actions"
@@ -40,16 +39,15 @@
         <!-- next week list -->
         <q-expansion-item switch-toggle-side expand-separator>
           <template v-slot:header>
-            <span class="text-h6">
-              Next week - 2 pending tasks
-            </span>
+            <div class="row text-primary text-weight-bold ellipsis title-content items-center">
+              <label style="font-size: 20px;">Next week - {{nextWeekLabel }}</label>
+            </div>            
           </template>
           <q-card>
             <q-card-section class="q-py-none q-my-none">
               <dynamicList
                 ref="nextWeekList"
                 :api-route="apiRoute"
-                :title="nextWeekLabel"
                 :columns="read.columns"
                 :actions="actions"
                 :permission="permission"
@@ -83,7 +81,7 @@ const states = {
   },
   expired: {
     color: '#fc0303', 
-    icon: 'fa-solid fa-circle-exclamation'
+    icon: 'fa-regular fa-calendar-circle-exclamation'
   }
   
 }
@@ -119,11 +117,8 @@ export default {
                   val => !!val || this.$tr('isite.cms.message.fieldRequired')
                 ],
               },
-            },
-            contentType: {
-              component: redCard
-            }          
-            
+            },            
+            component: redCard
           },
           {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'left', 
             style: 'width: 200px',
@@ -139,13 +134,12 @@ export default {
               }
             },          
           },
-          {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'left',
-            contentType: {
-              content: (val) => {                
-                const state = moment().format(dateFormat) > moment(val).format(dateFormat) ? states.expired : states.notExpired
-                return `<span style="color: ${state.color}"><i class="${state.icon}"></i> ${val}</span>`
-              }
-            }, 
+          {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'left',            
+            format: (val) => {
+              const state = moment().format(dateFormat) > moment(val).format(dateFormat) ? states.expired : states.notExpired
+              return `<span style="color: ${state.color}"><i class="${state.icon}"></i> ${moment(val).format('MMM Do')}</span>`
+            },
+            
             dynamicField: {          
               value: '',            
               type: 'date',
@@ -155,6 +149,10 @@ export default {
             }
           },
           {name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'left', 
+            format: (val) => {
+              const state = moment().format(dateFormat) < moment(val).format(dateFormat) ? states.notExpired : states.expired
+              return `<span style="color: ${state.color}"><i class="${state.icon}"></i> ${moment(val).format('MMM Do')}</span>`
+            },
             dynamicField: {          
               value: '',            
               type: 'date',
@@ -164,17 +162,16 @@ export default {
             }
           },
           {
-            name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'left',
-            format: val => ((val && val.title) ? val.title : '-'),
-            contentType: {
-              content: (val) => {
-                return val && val.title ? `<span style="color: ${val?.color}"><i class="${val?.icon}"></i> ${val?.title}</span>` : '-'
-              }
+            name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'left',            
+            format: (val) => {
+              return val && val.title ? `<span style="color: ${val?.color}"><i class="${val?.icon}"></i> ${val?.title}</span>` : '-'
             }
+            
           },
           {name: 'priority', label: this.$tr('itask.cms.form.priority'), field: 'priority', align: 'center', 
-            format: val => ((val && val.title) ? val.title : '-'),
-
+            format: (val) => {
+              return val && val.title ? `<span style="color: ${val?.color}"><i class="${val?.icon}"></i> ${val.title}</span>` : '-'
+            }
           },
           {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'left'},
           {name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
@@ -182,12 +179,11 @@ export default {
           },
           {
             name: 'category', label: this.$tr('isite.cms.form.category'),
-            align: 'left', field: 'category', sortable: true,
-            contentType: {
-              content: (val) => {
-                return val && val?.options ? `<span style="color: ${val.options.color}"><i class="${val.options.icon}"></i> ${val.title}</span>` : '-'
-              }
+            align: 'left', field: 'category', sortable: true,            
+            format: (val) => {
+              return val && val?.options ? `<span style="color: ${val.options.color}"><i class="${val.options.icon}"></i> ${val.title}</span>` : '-'
             }
+            
             
           },
           {
@@ -204,8 +200,7 @@ export default {
           },
           {
             name: 'actions', label: this.$tr('isite.cms.form.actions'), 
-            align: 'center',
-          
+            align: 'center',          
           },
         ],
         requestParams: {include: 'category,status,priority,timelogs,assignedTo'},
@@ -238,7 +233,17 @@ export default {
         },
       },
       beforeUpdate: (val) => {
-        console.warn('update bby', val)
+        return new Promise((resolve, reject) => {
+          //check startDate should be minot than dateFormat
+          console.log(val.startDate)
+          if(moment(val.startDate).format(dateFormat) > moment(val.endDate).format(dateFormat)){
+            this.$alert.error({message: 'start date is bigger than end date'})
+            reject(val)
+          } else {
+            console.log('resolve')
+            resolve(val)
+          }
+        })
       },
       
 
@@ -272,7 +277,8 @@ export default {
     }, 
     nextWeekLabel(){
       return `${moment().add(1, 'weeks').startOf('week').format('MMM Do')} - ${moment().add(1, 'weeks').endOf('week').format('MMM Do')}`      
-    }
+    }, 
+    
     
   },
   methods: {
