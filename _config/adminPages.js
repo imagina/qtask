@@ -69,7 +69,7 @@ export default {
     //crud : import('modules/qtask/_crud/tasks'),
     page: () => import('modules/qtask/_pages/tasksList'),
     layout: () => import('layouts/master.vue'),
-    title: 'Tasks DynamicList',
+    title: 'Task management',
     icon: 'fa-light fa-list-check',
     subHeader: {
         refresh: true,

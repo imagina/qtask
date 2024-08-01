@@ -1,14 +1,71 @@
 <template>  
-  <div>
-    <dynamicList
-      :api-route="apiRoute"
-      :title="title"
-      :columns="read.columns"
-      :actions="actions"
-      :permission="permission"
-      :requestParams="read.requestParams"
-      :beforeUpdate="read.beforeUpdate"
-    />
+  <div>  
+    <div>
+      <page-actions
+        title="Task management"
+        @refresh="reloadLists(true)"          
+      />
+    </div>
+    <div class="q-my-md">
+      <q-list>
+        <!-- this week list -->
+        <q-expansion-item
+          switch-toggle-side
+          expand-separator
+          default-opened
+        >
+        <template v-slot:header>
+          <span class="text-h6">
+            This week: 1 expired task
+          </span>
+        </template>
+          <q-card>
+            <q-card-section class="q-py-none q-my-none">
+              <dynamicList
+                ref="thisWeekList"
+                :title="thisWeekLabel"
+                :api-route="apiRoute"
+                :columns="read.columns"
+                :actions="actions"
+                :permission="permission"
+                :requestParams="read.requestParams"
+                :beforeUpdate="beforeUpdate"
+                :filters="read.filters"
+                :pageActions="false"
+                :help="read.help"
+              />
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+        <!-- next week list -->
+        <q-expansion-item switch-toggle-side expand-separator>
+          <template v-slot:header>
+            <span class="text-h6">
+              Next week - 2 pending tasks
+            </span>
+          </template>
+          <q-card>
+            <q-card-section class="q-py-none q-my-none">
+              <dynamicList
+                ref="nextWeekList"
+                :api-route="apiRoute"
+                :title="nextWeekLabel"
+                :columns="read.columns"
+                :actions="actions"
+                :permission="permission"
+                :requestParams="read.requestParams"
+                :beforeUpdate="beforeUpdate"
+                :filters="read.filters"
+                :pageActions="false"
+                :help="read.help"
+              />
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+
+        
+      </q-list>
+    </div>
   </div>
 </template>
 <script>
@@ -16,6 +73,8 @@
 import dynamicList from 'modules/qsite/_components/master/dynamicList'
 import redCard from 'modules/qtask/_components/redCard'
 import moment from 'moment';
+
+const dateFormat = 'YYYYMMDD'
 
 const states = {
   notExpired: {
@@ -83,7 +142,7 @@ export default {
           {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'left',
             contentType: {
               content: (val) => {                
-                const state = moment().format('YYYYMMDD') > moment(val).format('YYYYMMDD') ? states.expired : states.notExpired
+                const state = moment().format(dateFormat) > moment(val).format(dateFormat) ? states.expired : states.notExpired
                 return `<span style="color: ${state.color}"><i class="${state.icon}"></i> ${val}</span>`
               }
             }, 
@@ -109,7 +168,7 @@ export default {
             format: val => ((val && val.title) ? val.title : '-'),
             contentType: {
               content: (val) => {
-                return `<span style="color: ${val.color}"><i class="${val.icon}"></i> ${val.title}</span>`
+                return val && val.title ? `<span style="color: ${val?.color}"><i class="${val?.icon}"></i> ${val?.title}</span>` : '-'
               }
             }
           },
@@ -126,7 +185,7 @@ export default {
             align: 'left', field: 'category', sortable: true,
             contentType: {
               content: (val) => {
-                return `<span style="color: ${val.options.color}"><i class="${val.options.icon}"></i> ${val.title}</span>`
+                return val && val?.options ? `<span style="color: ${val.options.color}"><i class="${val.options.icon}"></i> ${val.title}</span>` : '-'
               }
             }
             
@@ -150,10 +209,37 @@ export default {
           },
         ],
         requestParams: {include: 'category,status,priority,timelogs,assignedTo'},
-        beforeUpdate: (val) => {
-          console.warn('update bby', val)
-        }
-      }, 
+        filters: {
+            categories: {
+              value: null,
+              type: 'treeSelect',
+              props: {
+                label: this.$tr('isite.cms.label.category')
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qblog.categories'
+              }
+            },
+            status: {
+              value: null,
+              type: 'select',
+              props: {
+                label: this.$tr('isite.cms.form.status'),
+                clearable: true
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qblog.statuses'
+              }
+            },
+        },
+        help: {
+          title: this.$tr("Dynamic table"),
+          description: this.$tr("this is the dynamic table description")
+        },
+      },
+      beforeUpdate: (val) => {
+        console.warn('update bby', val)
+      },
       
 
       actions: [
@@ -181,8 +267,19 @@ export default {
     }
   },
   computed: {
+    thisWeekLabel(){
+      return `${moment().startOf('week').format('MMM Do')} - ${moment().endOf('week').format('MMM Do')}`
+    }, 
+    nextWeekLabel(){
+      return `${moment().add(1, 'weeks').startOf('week').format('MMM Do')} - ${moment().add(1, 'weeks').endOf('week').format('MMM Do')}`      
+    }
+    
   },
   methods: {
+    reloadLists(){
+      this.$refs.thisWeekList.getData(true)
+      this.$refs.nextWeekList.getData(true)
+    }
   }
 }
 </script>
