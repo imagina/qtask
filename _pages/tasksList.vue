@@ -1,70 +1,83 @@
 <template>  
-  <div>  
     <div>
-      <page-actions
-        title="Task management"
-        @refresh="reloadLists(true)"          
-      />
-    </div>
-    <div class="q-my-md">
-      <q-list>
-        <!-- this week list -->
-        <q-expansion-item
-          switch-toggle-side
-          expand-separator
-          default-opened
+    <!--Content-->
+    <!-- tabs -->
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 q-mb-sm">
+        <q-tabs
+          v-model="tabModel"
+          dense
+          class="text-grey"
+          active-color="primary"
+          indicator-color="primary"
+          align="left"
+          no-caps
+          narrow-indicator
+          style="align-items: center;"
         >
-        <template v-slot:header>          
-          <div class="row text-primary text-weight-bold ellipsis title-content items-center">
-            <label style="font-size: 20px;">This week - {{ thisWeekLabel }}</label>
-          </div>
-        </template>
-          <q-card>
-            <q-card-section class="q-py-none q-my-none">
-              <dynamicList
-                ref="thisWeekList"
-                :api-route="apiRoute"
-                :columns="read.columns"
-                :actions="actions"
-                :permission="permission"
-                :requestParams="read.requestParams"
-                :beforeUpdate="beforeUpdate"
-                :filters="read.filters"
-                :pageActions="false"
-                :help="read.help"
-              />
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
-        <!-- next week list -->
-        <q-expansion-item switch-toggle-side expand-separator>
-          <template v-slot:header>
-            <div class="row text-primary text-weight-bold ellipsis title-content items-center">
-              <label style="font-size: 20px;">Next week - {{nextWeekLabel }}</label>
-            </div>            
-          </template>
-          <q-card>
-            <q-card-section class="q-py-none q-my-none">
-              <dynamicList
-                ref="nextWeekList"
-                :api-route="apiRoute"
-                :columns="read.columns"
-                :actions="actions"
-                :permission="permission"
-                :requestParams="read.requestParams"
-                :beforeUpdate="beforeUpdate"
-                :filters="read.filters"
-                :pageActions="false"
-                :help="read.help"
-              />
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
-
-        
-      </q-list>
+          <q-tab v-for="(tab, index) in tabs" :key="index" :name="tab.value"  :label="tab.label" />
+        </q-tabs>
+      </div>
     </div>
+    <!-- notifications-->
+    <div class="q-px-md">
+      <dynamicList
+        v-if="tabModel == tabs[0].value"
+        title="Task Management"
+        ref="dynamicList"
+        :api-route="apiRoute"
+        :columns="read.columns"
+        :actions="actions"
+        :permission="permission"
+        :requestParams="read.requestParams"
+        :beforeUpdate="beforeUpdate"
+        :filters="read.filters"
+        :help="read.help"
+      >      
+      <template #top-table>
+        <div class="tw-w-full tw-flex flex-row q-my-md">
+          <div>
+            <q-btn
+              text-color="primary"
+              class="q-mr-sm"
+              size="sm"
+              unelevated
+              round            
+              icon="fa-regular fa-chevron-left"
+              @click="goToPrevious()"
+            >
+              <q-tooltip anchor="bottom middle" self="top middle">
+                Previous *week
+              </q-tooltip>
+            </q-btn>
+          </div>
+          <div class="tw-w-full">
+            <div class="text-primary" style="font-size: 16px">
+              {{ dynamicListTitle }}, 2 pending tasks
+            </div>
+          </div>
+          <div>
+            <q-btn
+              text-color="primary"
+              class="q-mr-sm"
+              size="sm"
+              unelevated
+              round
+              icon="fa-regular fa-chevron-right"
+              @click="goToNext()"
+            >
+              <q-tooltip anchor="bottom middle" self="top middle">
+                Next *week
+              </q-tooltip>
+            </q-btn>
+          </div>
+        </div>
+      </template>
+      </dynamicList>
+    </div>
+    <inner-loading :visible="loading"/>
   </div>
+  
 </template>
 <script>
 //Components
@@ -82,8 +95,7 @@ const states = {
   expired: {
     color: '#fc0303', 
     icon: 'fa-regular fa-calendar-circle-exclamation'
-  }
-  
+  }  
 }
 
 export default {
@@ -99,7 +111,18 @@ export default {
     })
   },
   data() {
-    return {      
+    return {
+      tabs: [
+        {
+          value: 'table',
+          label: 'Table'
+        },
+        {
+          value: 'backlog',
+          label: 'Backlog'
+        },        
+      ],      
+      tabModel: 'table',        
       loading: false,  
       title: "DynamicTable 2",
       apiRoute: 'apiRoutes.qtask.tasks',
@@ -182,8 +205,7 @@ export default {
             align: 'left', field: 'category', sortable: true,            
             format: (val) => {
               return val && val?.options ? `<span style="color: ${val.options.color}"><i class="${val.options.icon}"></i> ${val.title}</span>` : '-'
-            }
-            
+            }            
             
           },
           {
@@ -273,20 +295,22 @@ export default {
     }
   },
   computed: {
-    thisWeekLabel(){
-      return `${moment().startOf('week').format('MMM Do')} - ${moment().endOf('week').format('MMM Do')}`
-    }, 
-    nextWeekLabel(){
-      return `${moment().add(1, 'weeks').startOf('week').format('MMM Do')} - ${moment().add(1, 'weeks').endOf('week').format('MMM Do')}`      
-    }, 
-    
+    dynamicListTitle(){
+      const range = ` ${moment().startOf('week').format('MMM Do')} - ${moment().endOf('week').format('MMM Do')}`
+      return `Week:  ${range}`
+    }
     
   },
   methods: {
-    reloadLists(){
-      this.$refs.thisWeekList.getData(true)
-      this.$refs.nextWeekList.getData(true)
-    }
+    goToPrevious(){
+      //todo get date and update filer
+      this.$refs.dynamicList.getData(true)
+    },
+    goToNext(){
+      //todo get date and update filer
+      this.$refs.dynamicList.getData(true)
+    },
+    
   }
 }
 </script>
