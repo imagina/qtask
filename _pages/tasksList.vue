@@ -235,7 +235,8 @@ export default {
       beforeUpdate: (val) => {
         return new Promise((resolve, reject) => {
           //check startDate should be minot than dateFormat
-          console.log(val.startDate)
+          if(val.description == '') reject(val)
+          
           if(moment(val.startDate).format(dateFormat) > moment(val.endDate).format(dateFormat)){
             this.$alert.error({message: 'start date is bigger than end date'})
             reject(val)
