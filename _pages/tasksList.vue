@@ -114,12 +114,20 @@ export default {
           label: 'Backlog'
         },        
       ],      
-      tabModel: 'table',        
+      tabModel: 'table',
+      date: {
+        from: moment().startOf('week').format(dateFormat),  
+        to: moment().endOf('week').format(dateFormat)
+      },
       loading: false,  
       tableData: {
         title: "Task Management",
         apiRoute: 'apiRoutes.qtask.tasks',
         permission: 'itask.tasks',
+        search: true,
+        create: {
+          title: this.$tr('iappointment.cms.newCategory'),
+        },
         read: {
           columns: [
             {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
@@ -218,7 +226,15 @@ export default {
               align: 'center',          
             },
           ],
-          requestParams: {include: 'category,status,priority,timelogs,assignedTo'},
+          requestParams: {
+            include: 'category,status,priority,timelogs,assignedTo',
+            filter: {
+              date: {
+                from: moment().startOf('week').format(dateFormat),  
+                to: moment().endOf('week').format(dateFormat)
+              }
+            }
+          },
           filters: {
               categories: {
                 value: null,
@@ -245,6 +261,128 @@ export default {
           help: {
             title: this.$tr("Dynamic table"),
             description: this.$tr("this is the dynamic table description")
+          },
+        },
+        formLeft: {
+          id: {value: ''},
+          userId: {value: this.$store.state.quserAuth.userId},
+          title: {
+            value: '',
+            type: 'input',
+            props: {
+              label: `${this.$tr('isite.cms.form.title')}*`,
+              rules: [
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+          },
+          description: {
+            name : "description",
+            value: '',
+            type: 'html',
+            props: {
+              label: `${this.$tr('isite.cms.form.description')}*`,
+              rules: [
+                val => !!val || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            }
+          },
+        },
+        formRight: {          
+          assignedToId: {
+            value: [],
+            type: 'select',
+            props: {
+              label: this.$tr('itask.cms.form.assigned'),
+              //multiple: true,
+              //useChips: true,
+              useInput: true,
+              rules: [
+                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.quser.users',              
+              select: {
+                label: 'email',
+                id: item => `${item.id}`                
+              }
+            }
+          },
+          startDate: {
+            value: '',            
+            type: 'date',
+            props: {
+              label: this.$tr('isite.cms.form.startDate')
+             }
+          },        
+          endDate: {
+            value: '',            
+            type: 'date',
+            props: {
+              label: this.$tr('isite.cms.form.endDate'),
+            }
+          },
+          estimatedTime: {
+            value: '',            
+            type: 'input',
+            props: {
+              label: this.$tr('itask.cms.form.estimatedTime'),
+            }
+          },
+          priorityId: {
+            value: [],
+            type: 'select',
+            props: {
+              label: this.$tr('itask.cms.form.priority'),             
+              useInput: true,
+              rules: [
+                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qtask.priorities',
+              select: {
+                label: 'title',
+                id: item => `${item.id}`
+              }
+            }
+          },
+          categoryId: {
+            value: [],
+            type: 'select',
+            props: {
+              label: this.$tr('isite.cms.form.category'),
+              useInput: true,
+              rules: [
+                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qtask.categories',
+              select: {
+                label: 'title',
+                id: item => `${item.id}`
+              }
+            }
+          },
+          statusId: {
+            value: [],
+            type: 'select',
+            props: {
+              label: this.$tr('isite.cms.form.status'),             
+              useInput: true,
+              rules: [
+                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qtask.statuses',
+              select: {
+                label: 'title',
+                id: item => `${item.id}`
+              }
+            }
           },
         },
         beforeUpdate: (val) => {
@@ -288,20 +426,37 @@ export default {
   },
   computed: {
     dynamicListTitle(){
-      const range = ` ${moment().startOf('week').format('MMM Do')} - ${moment().endOf('week').format('MMM Do')}`
-      return `Week:  ${range}`
-    }
+      const from = moment(this.getDate.from).format('MMM Do')
+      const to = moment(this.getDate.to).format('MMM Do')
+      return `Week:  ${from} - ${to}`
+    }, 
+    getDate(){      
+      return this.tableData.read.requestParams.filter.date
+    },
     
   },
   methods: {
+    setDate(from, to){      
+      this.tableData.read.requestParams.filter.date = {from, to}
+    },    
+    refreshDynamicList(){
+      this.$refs.dynamicList.getData(true)
+    },
     goToPrevious(){
       //todo get date and update filer
-      this.$refs.dynamicList.getData(true)
+      const from = moment(this.getDate.from).subtract(1, 'weeks').startOf('week').format(dateFormat)
+      const to = moment(this.getDate.to).subtract(1, 'weeks').endOf('week').format(dateFormat)
+      this.setDate(from, to)
+      this.refreshDynamicList()
     },
     goToNext(){
       //todo get date and update filer
-      this.$refs.dynamicList.getData(true)
+      const from = moment(this.getDate.from).add(1, 'weeks').startOf('week').format(dateFormat)
+      const to = moment(this.getDate.to).add(1, 'weeks').endOf('week').format(dateFormat)
+      this.setDate(from, to)
+      this.refreshDynamicList()
     },
+
     
   }
 }
