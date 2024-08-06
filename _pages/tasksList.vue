@@ -27,7 +27,7 @@
         :tableData="tableData"        
       >      
       <template #top-table>
-        <div class="tw-w-full tw-flex flex-row q-my-md">
+        <div class="tw-w-full tw-flex q-my-md items-center">
           <div>
             <q-btn
               text-color="primary"
@@ -44,19 +44,15 @@
             </q-btn>
           </div>
           <div class="tw-w-full row">
-            <div class="text-primary cursor-pointer	" style="font-size: 16px">
-              {{ dynamicListTitle }}              
-              
-            </div>
             <dynamic-field
+                v-model="dateRangeFilter.value"
                 @update:model-value="(value) => setDateRange(value)"
                 :field="dateRangeFilter"
-                style="width: 300px;"
-                dense
-              />
-            
-            
-            
+                style="width: 230px;"
+            />
+            <div class="text-primary q-pa-md" style="font-size: 16px">
+              <div>{{ dynamicListTitle }}</div>
+            </div>
           </div>
           <div>
             <q-btn
@@ -79,7 +75,6 @@
     </div>
     <inner-loading :visible="loading"/>
   </div>
-  
 </template>
 <script>
 //Components
@@ -130,6 +125,7 @@ export default {
         to: moment().endOf('week').format(dateFormat)
       },
       editDate:false,
+      dateRangeFilterModel: null,
       dateRangeFilter: {
         value: {
           type: 'customRange',
@@ -140,7 +136,8 @@ export default {
         props: {
           label: 'Date',
           clearable: false,
-          removeTime: true
+          removeTime: true, 
+          autoClose: true
         }
       },
       loading: false,  
@@ -463,9 +460,13 @@ export default {
   methods: {
     setDate(from, to){    
       this.date = {from, to}
+      this.dateRangeFilter.value = {
+        type: 'customRange',
+        from,
+        to
+      } 
       this.tableData.read.requestParams.filter['date'] = this.date
       this.refreshDynamicList()
-
       //this.tableData.read.filters.date.value = this.date
     },    
     refreshDynamicList(){
@@ -475,6 +476,7 @@ export default {
       //todo get date and update filer
       const from = moment(this.date.from).subtract(1, 'weeks').startOf('week').format(dateFormat)
       const to = moment(this.date.to).subtract(1, 'weeks').endOf('week').format(dateFormat)
+      this.dateRangeFilter.value = null
       this.setDate(from, to)
       
     },
@@ -489,8 +491,6 @@ export default {
       const to = moment(value.to).format(dateFormat)
       this.setDate(from, to)
     }
-
-    
   }
 }
 </script>
