@@ -454,10 +454,6 @@ export default {
       return `Week:  ${from} - ${to}`
     }, 
     
-    getDate(){      
-      return this.tableData.read.requestParams.filter.date    
-    },         
-    
   },
   methods: {
     setDate(from, to){    
