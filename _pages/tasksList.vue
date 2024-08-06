@@ -48,7 +48,7 @@
                 v-model="dateRangeFilter.value"
                 @update:model-value="(value) => setDateRange(value)"
                 :field="dateRangeFilter"
-                style="width: 230px;"
+                style="width: 246px;"
             />
             <div class="text-primary q-pa-md" style="font-size: 16px">
               <div>{{ dynamicListTitle }}</div>
@@ -284,6 +284,8 @@ export default {
             description: this.$tr("this is the dynamic table description")
           },
         },
+        update: true,
+        delete: false,
         formLeft: {
           id: {value: ''},
           userId: {value: this.$store.state.quserAuth.userId},
@@ -476,7 +478,6 @@ export default {
       //todo get date and update filer
       const from = moment(this.date.from).subtract(1, 'weeks').startOf('week').format(dateFormat)
       const to = moment(this.date.to).subtract(1, 'weeks').endOf('week').format(dateFormat)
-      this.dateRangeFilter.value = null
       this.setDate(from, to)
       
     },
@@ -487,9 +488,11 @@ export default {
       this.setDate(from, to)      
     },
     setDateRange(value){
-      const from = moment(value.from).format(dateFormat)
-      const to = moment(value.to).format(dateFormat)
-      this.setDate(from, to)
+      if(value != null && value?.from && value?.to){
+        const from = moment(value.from).format(dateFormat)
+        const to = moment(value.to).format(dateFormat)
+        this.setDate(from, to)
+      }
     }
   }
 }
