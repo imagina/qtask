@@ -39,14 +39,24 @@
               @click="goToPrevious()"
             >
               <q-tooltip anchor="bottom middle" self="top middle">
-                Previous *week
+                Previous week
               </q-tooltip>
             </q-btn>
           </div>
-          <div class="tw-w-full">
-            <div class="text-primary" style="font-size: 16px">
-              {{ dynamicListTitle }}
+          <div class="tw-w-full row">
+            <div class="text-primary cursor-pointer	" style="font-size: 16px">
+              {{ dynamicListTitle }}              
+              
             </div>
+            <dynamic-field
+                @update:model-value="(value) => setDateRange(value)"
+                :field="dateRangeFilter"
+                style="width: 300px;"
+                dense
+              />
+            
+            
+            
           </div>
           <div>
             <q-btn
@@ -59,7 +69,7 @@
               @click="goToNext()"
             >
               <q-tooltip anchor="bottom middle" self="top middle">
-                Next *week
+                Next week
               </q-tooltip>
             </q-btn>
           </div>
@@ -77,7 +87,7 @@ import dynamicList from 'modules/qsite/_components/master/dynamicList'
 import redCard from 'modules/qtask/_components/redCard'
 import moment from 'moment';
 
-const dateFormat = 'YYYYMMDD'
+const dateFormat = 'YYYY/MM/DD'
 
 const states = {
   notExpired: {
@@ -119,8 +129,22 @@ export default {
         from: moment().startOf('week').format(dateFormat),  
         to: moment().endOf('week').format(dateFormat)
       },
+      editDate:false,
+      dateRangeFilter: {
+        value: {
+          type: 'customRange',
+          from: moment().startOf('week').format(dateFormat),  
+          to: moment().endOf('week').format(dateFormat)
+        },
+        type: 'dateRange',        
+        props: {
+          label: 'Date',
+          clearable: false,
+          removeTime: true
+        }
+      },
       loading: false,  
-      tableData: {
+      tableData: {        
         title: "Task Management",
         apiRoute: 'apiRoutes.qtask.tasks',
         permission: 'itask.tasks',
@@ -129,6 +153,7 @@ export default {
           title: this.$tr('iappointment.cms.newCategory'),
         },
         read: {
+          showAs: 'full',
           columns: [
             {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
             {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth', 
@@ -142,7 +167,7 @@ export default {
                   ],
                 },
               },            
-              component: redCard
+              //component: redCard
             },
             {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'left', 
               style: 'width: 200px',
@@ -236,27 +261,26 @@ export default {
             }
           },
           filters: {
-              categories: {
-                value: null,
-                type: 'treeSelect',
-                props: {
-                  label: this.$tr('isite.cms.label.category')
-                },
-                loadOptions: {
-                  apiRoute: 'apiRoutes.qblog.categories'
-                }
+            assignedToId: {
+              value: [],
+              type: 'select',
+              props: {
+                label: this.$tr('itask.cms.form.assigned'),
+                //multiple: true,
+                //useChips: true,
+                useInput: true,
+                rules: [
+                  val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+                ],
               },
-              status: {
-                value: null,
-                type: 'select',
-                props: {
-                  label: this.$tr('isite.cms.form.status'),
-                  clearable: true
-                },
-                loadOptions: {
-                  apiRoute: 'apiRoutes.qblog.statuses'
+              loadOptions: {
+                apiRoute: 'apiRoutes.quser.users',              
+                select: {
+                  label: 'email',
+                  id: item => `${item.id}`                
                 }
-              },
+              }
+            },
           },
           help: {
             title: this.$tr("Dynamic table"),
@@ -426,36 +450,45 @@ export default {
   },
   computed: {
     dynamicListTitle(){
-      const from = moment(this.getDate.from).format('MMM Do')
-      const to = moment(this.getDate.to).format('MMM Do')
+      const from = moment(this.date.from).format('MMM Do')
+      const to = moment(this.date.to).format('MMM Do')
       return `Week:  ${from} - ${to}`
     }, 
+    
     getDate(){      
-      return this.tableData.read.requestParams.filter.date
-    },
+      return this.tableData.read.requestParams.filter.date    
+    },         
     
   },
   methods: {
-    setDate(from, to){      
-      this.tableData.read.requestParams.filter.date = {from, to}
+    setDate(from, to){    
+      this.date = {from, to}
+      this.tableData.read.requestParams.filter['date'] = this.date
+      this.refreshDynamicList()
+
+      //this.tableData.read.filters.date.value = this.date
     },    
     refreshDynamicList(){
       this.$refs.dynamicList.getData(true)
     },
     goToPrevious(){
       //todo get date and update filer
-      const from = moment(this.getDate.from).subtract(1, 'weeks').startOf('week').format(dateFormat)
-      const to = moment(this.getDate.to).subtract(1, 'weeks').endOf('week').format(dateFormat)
+      const from = moment(this.date.from).subtract(1, 'weeks').startOf('week').format(dateFormat)
+      const to = moment(this.date.to).subtract(1, 'weeks').endOf('week').format(dateFormat)
       this.setDate(from, to)
-      this.refreshDynamicList()
+      
     },
     goToNext(){
       //todo get date and update filer
-      const from = moment(this.getDate.from).add(1, 'weeks').startOf('week').format(dateFormat)
-      const to = moment(this.getDate.to).add(1, 'weeks').endOf('week').format(dateFormat)
-      this.setDate(from, to)
-      this.refreshDynamicList()
+      const from = moment(this.date.from).add(1, 'weeks').startOf('week').format(dateFormat)
+      const to = moment(this.date.to).add(1, 'weeks').endOf('week').format(dateFormat)
+      this.setDate(from, to)      
     },
+    setDateRange(value){
+      const from = moment(value.from).format(dateFormat)
+      const to = moment(value.to).format(dateFormat)
+      this.setDate(from, to)
+    }
 
     
   }
