@@ -266,6 +266,7 @@ export default {
                 //multiple: true,
                 //useChips: true,
                 useInput: true,
+                clearable: true,                
                 rules: [
                   val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
                 ],
@@ -278,6 +279,63 @@ export default {
                 }
               }
             },
+            priorityId: {
+              value: [],
+              type: 'select',
+              props: {
+                label: this.$tr('itask.cms.form.priority'),             
+                useInput: true,
+                clearable: true,
+                rules: [
+                  val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+                ],
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qtask.priorities',
+                select: {
+                  label: 'title',
+                  id: item => `${item.id}`
+                }
+              }
+            },
+            categoryId: {
+              value: [],
+              type: 'select',
+              props: {
+                label: this.$tr('isite.cms.form.category'),
+                useInput: true,
+                clearable: true,
+                rules: [
+                  val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+                ],
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qtask.categories',
+                select: {
+                  label: 'title',
+                  id: item => `${item.id}`
+                }
+              }
+            },
+            statusId: {
+              value: [],
+              type: 'select',
+              props: {
+                label: this.$tr('isite.cms.form.status'),             
+                useInput: true,
+                clearable: true,
+                rules: [
+                  val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+                ],
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qtask.statuses',
+                select: {
+                  label: 'title',
+                  id: item => `${item.id}`
+                }
+              }
+            },            
           },
           help: {
             title: this.$tr("Dynamic table"),
@@ -352,6 +410,7 @@ export default {
             props: {
               label: this.$tr('itask.cms.form.estimatedTime'),
             }
+          
           },
           priorityId: {
             value: [],
@@ -471,7 +530,7 @@ export default {
 
 
     refreshDynamicList(){
-      this.$refs.dynamicList.getData(true)
+      this.$refs.dynamicList.getData({pagination: {page: 0}}, true)
     },
     goToPrevious(){
       
