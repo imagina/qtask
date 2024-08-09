@@ -251,10 +251,12 @@ export default {
           requestParams: {
             include: 'category,status,priority,timelogs,assignedTo',
             filter: {
+              /*
               rangeDate: {
                 from: moment().startOf('week').format(dateFormat),  
                 to: moment().endOf('week').format(dateFormat)
               }
+                */
             }
           },
           filters: {
@@ -522,7 +524,8 @@ export default {
         from,
         to
       } 
-      this.tableData.read.requestParams.filter['rangeDate'] = this.date
+      //this.tableData.read.requestParams.filter['rangeDate'] = this.date
+      this.$refs.dynamicList.updateFilter('rangeDate', this.date)
       this.refreshDynamicList()
       //this.tableData.read.filters.date.value = this.date
     },
