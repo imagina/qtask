@@ -251,7 +251,7 @@ export default {
           requestParams: {
             include: 'category,status,priority,timelogs,assignedTo',
             filter: {
-              date: {
+              rangeDate: {
                 from: moment().startOf('week').format(dateFormat),  
                 to: moment().endOf('week').format(dateFormat)
               }
@@ -463,22 +463,26 @@ export default {
         from,
         to
       } 
-      this.tableData.read.requestParams.filter['date'] = this.date
+      this.tableData.read.requestParams.filter['rangeDate'] = this.date
       this.refreshDynamicList()
       //this.tableData.read.filters.date.value = this.date
-    },    
+    },
+
+
+
     refreshDynamicList(){
       this.$refs.dynamicList.getData(true)
     },
     goToPrevious(){
-      //todo get date and update filer
+      
+      //next week
       const from = moment(this.date.from).subtract(1, 'weeks').startOf('week').format(dateFormat)
-      const to = moment(this.date.to).subtract(1, 'weeks').endOf('week').format(dateFormat)
+      const to = moment(this.date.from).subtract(1, 'weeks').endOf('week').format(dateFormat)
       this.setDate(from, to)
       
     },
     goToNext(){
-      //todo get date and update filer
+      //next week
       const from = moment(this.date.from).add(1, 'weeks').startOf('week').format(dateFormat)
       const to = moment(this.date.to).add(1, 'weeks').endOf('week').format(dateFormat)
       this.setDate(from, to)      
@@ -487,7 +491,7 @@ export default {
       if(value != null && value?.from && value?.to){
         const from = moment(value.from).format(dateFormat)
         const to = moment(value.to).format(dateFormat)
-        this.setDate(from, to)
+        if(from != this.date.from || to != this.date.to ) this.setDate(from, to)
       }
     }
   }
