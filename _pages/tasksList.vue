@@ -24,7 +24,7 @@
       <dynamicList
         v-if="tabModel == tabs[0].value"        
         ref="dynamicList"
-        :tableData="tableData"        
+        :listData="listData"        
       >      
       <template #top-table>
         <div class="tw-w-full tw-flex q-my-md items-center">
@@ -141,7 +141,7 @@ export default {
         }
       },
       loading: false,  
-      tableData: {        
+      listData: {        
         title: "Task Management",
         apiRoute: 'apiRoutes.qtask.tasks',
         permission: 'itask.tasks',
@@ -491,7 +491,7 @@ export default {
             color: 'red',
             label: this.$tr('isite.cms.label.edit'),
             action: (item) => {
-              console.warn('edit', item.id)
+              this.$refs.dynamicList.crud.update(item)              
             }
           },
           {//Delete action
@@ -501,7 +501,7 @@ export default {
             color: 'red',
             label: this.$tr('isite.cms.label.delete'),          
             action: (item) => {
-              this.$refs.dynamicList.deleteRow(item)
+              this.$refs.dynamicList.crud.delete(item)
             }
           },
         ]      
@@ -524,10 +524,10 @@ export default {
         from,
         to
       } 
-      //this.tableData.read.requestParams.filter['rangeDate'] = this.date
+      //this.listData.read.requestParams.filter['rangeDate'] = this.date
       this.$refs.dynamicList.updateFilter('rangeDate', this.date)
       this.refreshDynamicList()
-      //this.tableData.read.filters.date.value = this.date
+      //this.listData.read.filters.date.value = this.date
     },
 
 
