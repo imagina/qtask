@@ -501,7 +501,7 @@ export default {
             color: 'red',
             label: this.$tr('isite.cms.label.delete'),          
             action: (item) => {
-              console.warn('delete', item.id)
+              this.$refs.dynamicList.deleteRow(item)
             }
           },
         ]      
