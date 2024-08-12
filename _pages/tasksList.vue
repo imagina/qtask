@@ -141,16 +141,16 @@ export default {
         }
       },
       loading: false,  
-      listData: {        
-        title: "Task Management",
+      listData: {
         apiRoute: 'apiRoutes.qtask.tasks',
         permission: 'itask.tasks',
         search: true,
         create: {
-          title: this.$tr('iappointment.cms.newCategory'),
+          title: 'New Task',
         },
         read: {
-          showAs: 'full',
+          title: "Task Management",
+          showAs: 'cuustom',
           columns: [
             {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
             {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth', 
@@ -211,13 +211,51 @@ export default {
               name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'left',            
               format: (val) => {
                 return val && val.title ? `<span style="color: ${val?.color}"><i class="${val?.icon}"></i> ${val?.title}</span>` : '-'
-              }
+              },
+              dynamicField: {
+                //value: [],
+                type: 'select',
+                props: {
+                  label: this.$tr('isite.cms.form.status'),             
+                  useInput: true,
+                  clearable: true,
+                  rules: [
+                    val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+                  ],
+                },
+                loadOptions: {
+                  apiRoute: 'apiRoutes.qtask.statuses',
+                  select: {
+                    label: 'title',
+                    id: item => `${item.id}`
+                  }
+                }
+              },         
               
             },
             {name: 'priority', label: this.$tr('itask.cms.form.priority'), field: 'priority', align: 'center', 
               format: (val) => {
                 return val && val.title ? `<span style="color: ${val?.color}"><i class="${val?.icon}"></i> ${val.title}</span>` : '-'
-              }
+              }, 
+              dynamicField: {
+                value: [],
+                type: 'select',
+                props: {
+                  label: this.$tr('itask.cms.form.priority'),             
+                  useInput: true,
+                  clearable: true,
+                  rules: [
+                    val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+                  ],
+                },
+                loadOptions: {
+                  apiRoute: 'apiRoutes.qtask.priorities',
+                  select: {
+                    label: 'title',
+                    id: item => `${item.id}`
+                  }
+                }
+              },
             },
             {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'left'},
             {name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
@@ -249,15 +287,7 @@ export default {
             },
           ],
           requestParams: {
-            include: 'category,status,priority,timelogs,assignedTo',
-            filter: {
-              /*
-              rangeDate: {
-                from: moment().startOf('week').format(dateFormat),  
-                to: moment().endOf('week').format(dateFormat)
-              }
-                */
-            }
+            include: 'category,status,priority,timelogs,assignedTo'
           },
           filters: {
             assignedToId: {
@@ -529,19 +559,14 @@ export default {
       this.refreshDynamicList()
       //this.listData.read.filters.date.value = this.date
     },
-
-
-
     refreshDynamicList(){
       this.$refs.dynamicList.getData({pagination: {page: 0}}, true)
     },
-    goToPrevious(){
-      
+    goToPrevious(){      
       //next week
       const from = moment(this.date.from).subtract(1, 'weeks').startOf('week').format(dateFormat)
       const to = moment(this.date.from).subtract(1, 'weeks').endOf('week').format(dateFormat)
-      this.setDate(from, to)
-      
+      this.setDate(from, to)      
     },
     goToNext(){
       //next week
