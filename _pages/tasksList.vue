@@ -79,7 +79,6 @@
 <script>
 //Components
 import dynamicList from 'modules/qsite/_components/master/dynamicList'
-import redCard from 'modules/qtask/_components/redCard'
 import moment from 'moment';
 
 const dateFormat = 'YYYY/MM/DD'
@@ -98,8 +97,7 @@ const states = {
 export default {
   props: {},
   components: {
-    dynamicList, 
-    redCard
+    dynamicList
   },
   watch: {},
   mounted() {
@@ -163,8 +161,7 @@ export default {
                     val => !!val || this.$tr('isite.cms.message.fieldRequired')
                   ],
                 },
-              },            
-              //component: redCard
+              },
             },
             {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'left', 
               style: 'width: 200px',
