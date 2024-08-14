@@ -215,6 +215,7 @@ export default {
               dynamicField: {
                 //value: [],
                 type: 'select',
+                name: 'statusId',
                 props: {
                   label: this.$tr('isite.cms.form.status'),             
                   useInput: true,
@@ -240,6 +241,7 @@ export default {
               dynamicField: {
                 value: [],
                 type: 'select',
+                name: 'priorityId',
                 props: {
                   label: this.$tr('itask.cms.form.priority'),             
                   useInput: true,
@@ -260,6 +262,28 @@ export default {
             {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'left'},
             {name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
               format: val => ((val && (val.firstName || val.lastName) ) ? `${val.firstName} ${val.lastName}` : '-'),
+              dynamicField: {
+                value: [],
+                type: 'select',
+                name: 'assignedToId',
+                props: {
+                  label: this.$tr('itask.cms.form.assigned'),
+                  //multiple: true,
+                  //useChips: true,
+                  useInput: true,
+                  clearable: true,
+                  rules: [
+                    val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+                  ],
+                },
+                loadOptions: {
+                  apiRoute: 'apiRoutes.quser.users',
+                  select: {
+                    label: 'email',
+                    id: item => `${item.id}`
+                  }
+                }
+              },
             },
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
