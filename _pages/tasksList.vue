@@ -140,7 +140,7 @@ export default {
           autoClose: true
         }
       },
-      loading: false,  
+      loading: false,
       listData: {
         apiRoute: 'apiRoutes.qtask.tasks',
         permission: 'itask.tasks',
@@ -398,8 +398,9 @@ export default {
             description: this.$tr("this is the dynamic table description")
           },
         },
-        update: true,
-        delete: false,
+        update: {
+          title: 'Update task'
+        },
         formLeft: {
           id: {value: ''},
           userId: {value: this.$store.state.quserAuth.userId},
