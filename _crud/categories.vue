@@ -84,16 +84,6 @@ export default {
               label: this.$tr('isite.cms.form.parent'),
             }
           },
-          options: {
-            value: 0,
-            type: 'select',
-            props: {
-              label: this.$tr('isite.cms.form.option'),
-              options: [
-                {label: 'option 0', value: 0},
-              ],
-            }
-          },
         },
         formRight: {}
       }
