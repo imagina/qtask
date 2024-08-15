@@ -42,7 +42,42 @@ export default {
             },
             {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
           ],          
-          filters: {}
+          filters: {
+            assignedToId: {
+            value: [],
+            type: 'select',
+            props: {
+              label: this.$tr('itask.cms.form.assigned'),
+              //multiple: true,
+              //useChips: true,
+              useInput: true,
+              rules: [
+                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+              ],
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.quser.users',              
+              select: {
+                label: 'email',
+                id: item => `${item.id}`                
+              }
+            }
+          },
+          startDate: {
+            value: '',            
+            type: 'date',
+            props: {
+              label: this.$tr('isite.cms.form.startDate')
+             }
+          },        
+          endDate: {
+            value: '',            
+            type: 'date',
+            props: {
+              label: this.$tr('isite.cms.form.endDate'),
+            }
+          },
+          }
         },
         update: {
           title: this.$tr('itask.cms.updateTask'),
