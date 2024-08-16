@@ -3,10 +3,12 @@
       v-if="data"
       :style="{ 'background-color': background, 'color': color}"
     >
-      <div class="ellipsis flex justify-center items-center" style="height: 36px">
-        <i v-if="data?.icon" :class="data?.icon"></i>
-        &nbsp;
-        {{ data.title }}</div>
+      <div class="flex justify-center items-center " style="width: 140px;  height: 36px; padding: 8px;">
+        <div class="ellipsis">
+          <i v-if="data?.icon" :class="data?.icon"></i>&nbsp;
+          {{ data.title }}
+        </div>
+      </div>
     </div>
   </template>
   <script lang="ts">
