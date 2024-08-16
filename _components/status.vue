@@ -2,6 +2,7 @@
     <div
       v-if="data"
       :style="{ 'background-color': background, 'color': color}"
+      v-ripple
     >
       <div class="flex justify-center items-center " style="width: 140px;  height: 36px; padding: 8px;">
         <div class="ellipsis">

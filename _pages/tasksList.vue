@@ -82,6 +82,7 @@ import dynamicList from 'modules/qsite/_components/master/dynamicList'
 import statusComponent from 'modules/qtask/_components/status'
 import priorityComponent from 'modules/qtask/_components/priority'
 import dateComponent from 'modules/qtask/_components/date'
+import daysComponent from 'modules/qtask/_components/days'
 import moment from 'moment';
 
 const dateFormat = 'YYYY/MM/DD'
@@ -145,8 +146,9 @@ export default {
             dense: true
           },
           columns: [
-            {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
-            {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth', 
+            {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: ''},
+            {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth',
+              style: "max-width: 200px;width: 200px;", 
               dynamicField: {
                 value: '',
                 type: 'input',
@@ -158,19 +160,30 @@ export default {
                 },
               },
             },
-            {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'left', 
-              style: 'width: 200px',
+            {name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
+              format: val => ((val && (val.firstName || val.lastName) ) ? `${val.firstName} ${val.lastName}` : '-'),
               dynamicField: {
-                name : "description",
-                value: '',
-                type: 'html',
+                value: [],
+                type: 'select',
+                name: 'assignedToId',
                 props: {
-                  label: `${this.$tr('isite.cms.form.description')}*`,
+                  label: this.$tr('itask.cms.form.assigned'),
+                  //multiple: true,
+                  //useChips: true,
+                  useInput: true,
+                  clearable: true,
                   rules: [
-                    val => !!val || this.$tr('isite.cms.message.fieldRequired')
+                    val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
                   ],
+                },
+                loadOptions: {
+                  apiRoute: 'apiRoutes.quser.users',
+                  select: {
+                    label: 'email',
+                    id: item => `${item.id}`
+                  }
                 }
-              },          
+              },
             },
             {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'center',
               classes: "padding-none",
@@ -195,6 +208,12 @@ export default {
                   label: this.$tr('isite.cms.form.endDate'),
                 }
               }
+            },
+            {name: 'days', label: 'days', field: 'days', align: 'center',
+              classes: "padding-none",
+              headerClasess: "padding-none",
+              component: daysComponent,
+              
             },
             {
               name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'center', 
@@ -247,32 +266,24 @@ export default {
                 }
               },
             },
-            {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'left'},
-            {name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
-              format: val => ((val && (val.firstName || val.lastName) ) ? `${val.firstName} ${val.lastName}` : '-'),
+            {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'left', 
+              style: "max-width: 300px;",
               dynamicField: {
-                value: [],
-                type: 'select',
-                name: 'assignedToId',
+                name : "description",
+                value: '',
+                type: 'html',
                 props: {
-                  label: this.$tr('itask.cms.form.assigned'),
-                  //multiple: true,
-                  //useChips: true,
-                  useInput: true,
-                  clearable: true,
+                  label: `${this.$tr('isite.cms.form.description')}*`,
                   rules: [
-                    val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+                    val => !!val || this.$tr('isite.cms.message.fieldRequired')
                   ],
-                },
-                loadOptions: {
-                  apiRoute: 'apiRoutes.quser.users',
-                  select: {
-                    label: 'email',
-                    id: item => `${item.id}`
-                  }
                 }
-              },
+              },          
             },
+            
+            
+            {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'center'},
+            
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
               align: 'left', field: 'category', sortable: true,            
