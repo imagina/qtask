@@ -280,10 +280,7 @@ export default {
                 }
               },          
             },
-            
-            
             {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'center'},
-            
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
               align: 'left', field: 'category', sortable: true,            
@@ -309,6 +306,10 @@ export default {
                   }
                 }
               },
+            },
+            {
+              name: 'timeLogs', label: 'Time Logs', field: 'timeLogs', align: 'left',
+              format: val => val ? this.$trd(val) : '-',
             },
             /*
             {
@@ -551,7 +552,7 @@ export default {
         },
         beforeUpdate: (val) => {
           return new Promise((resolve, reject) => {
-            //check startDate should be minot than dateFormat
+            //check startDate should be minor than dateFormat
             if(val.description == '') reject(val)
             
             if(moment(val.startDate).format(dateFormat) > moment(val.endDate).format(dateFormat)){
@@ -606,7 +607,6 @@ export default {
       this.listData.read.requestParams.filter['rangeDate'] = this.date
       this.$refs.dynamicList.updateFilter('rangeDate', this.date)      
       this.refreshDynamicList()
-      
     },
     refreshDynamicList(){
       this.$refs.dynamicList.getData({pagination: {page: 0}}, true)
