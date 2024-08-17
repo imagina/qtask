@@ -82,7 +82,7 @@ import dynamicList from 'modules/qsite/_components/master/dynamicList'
 import statusComponent from 'modules/qtask/_components/status'
 import priorityComponent from 'modules/qtask/_components/priority'
 import dateComponent from 'modules/qtask/_components/date'
-import daysComponent from 'modules/qtask/_components/days'
+import timeLogsComponent from 'modules/qtask/_components/timeLogs'
 import moment from 'moment';
 
 const dateFormat = 'YYYY/MM/DD'
@@ -209,11 +209,10 @@ export default {
                 }
               }
             },
-            {name: 'days', label: 'days', field: 'days', align: 'center',
+            {name: 'duration', label: 'duration', field: 'duration', align: 'center',
               classes: "padding-none",
               headerClasess: "padding-none",
-              component: daysComponent,
-              
+              format: (val) => { return val ? val : '-'},
             },
             {
               name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'center', 
@@ -280,7 +279,7 @@ export default {
                 }
               },          
             },
-            {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'center'},
+            {name: 'formatedEstimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'formatedEstimatedTime', align: 'center'},
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
               align: 'left', field: 'category', sortable: true,            
@@ -309,7 +308,8 @@ export default {
             },
             {
               name: 'timeLogs', label: 'Time Logs', field: 'timeLogs', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
+              component: timeLogsComponent,
+              //format: val => val ? this.$trd(val) : '-',
             },
             /*
             {
@@ -492,8 +492,7 @@ export default {
             type: 'input',
             props: {
               label: this.$tr('itask.cms.form.estimatedTime'),
-            }
-          
+            }          
           },
           priorityId: {
             value: [],
