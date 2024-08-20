@@ -1,13 +1,25 @@
 <template>
   <div @click="modal = true" class="cursor-pointer">
     <p>timeLogs: {{ data }}</p>
-
-
     <q-dialog v-model="modal">
         <q-card >
           <q-card-section class="bg-white">
             <p>totalFormatedTimelogsDuration: {{ row.totalFormatedTimelogsDuration }}</p>
             <p>totalTimelogsDurationInMinutes: {{ row.totalTimelogsDurationInMinutes }}</p>
+            <dynamic-field
+               v-model="timeLogModel"
+               :field="timeLogField"
+               @update:model-value="(value) => $emit(value)"               
+               style="width: 246px;"
+            />
+
+            <q-btn
+            :label="`update : ${col.id}`"
+            no-caps
+            unelevated
+            rounded            
+            @click.stop.prevent="scope.cancel"
+          />
           </q-card-section>
 
           <q-card-section>
@@ -65,7 +77,18 @@
     },
     data(){
       return {
-        modal: false
+        modal: false,
+        timeLogField: {
+          value: '',
+          type: 'input',
+          props: {
+            label: 'Tiempo empleado',
+            rules: [
+              val => !!val || this.$tr('isite.cms.message.fieldRequired')
+            ],          
+          },
+        },
+        timeLogModel: null
       }
     },
     methods: {

@@ -25,7 +25,8 @@
         v-if="tabModel == tabs[0].value"        
         ref="dynamicList"
         :listData="listData"        
-      >      
+      >
+      <!-- date range and week navigation -->      
       <template #top-table>
         <div class="tw-w-full tw-flex q-my-md items-center">
           <div>
@@ -269,6 +270,7 @@ export default {
               style: "max-width: 300px;",
               dynamicField: {
                 name : "description",
+                maxWidth: '600px',
                 value: '',
                 type: 'html',
                 props: {
@@ -310,21 +312,7 @@ export default {
               name: 'timeLogs', label: 'Time Logs', field: 'timeLogs', align: 'left',
               component: timeLogsComponent,
               //format: val => val ? this.$trd(val) : '-',
-            },
-            /*
-            {
-              name: 'createdAt', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
-            },
-            {
-              name: 'updatedAt', label: this.$tr('isite.cms.form.updatedAt'), field: 'updatedAt', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
-            },
-            {
-              name: 'deletedAt', label: this.$tr('itask.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
-            },
-            */
+            },            
             {
               name: 'actions', label: this.$tr('isite.cms.form.actions'), 
               align: 'center',          
