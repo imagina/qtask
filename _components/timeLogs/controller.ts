@@ -52,6 +52,8 @@ export default function controller(props, emit) {
       emit('closeModal')        
       emit('reloadRow', props.row)
     },
+    
+    
   }
 
   // Mounted

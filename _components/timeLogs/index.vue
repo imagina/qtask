@@ -13,24 +13,30 @@
           />
           
         </div>
-
-        <div class="row  q-gutter-y-sm">
+        <div class="row col">     
+          <q-list>
           <template v-for="(item, itemKey) in row.timelogs"  :key="itemKey" >            
-              <div class="col-12">
-                <q-chip 
-                  removable
-                  outline
-                  @remove="deleteTimeLog(item)"
-                >
-                <span class="text-weight-bold">{{ item.formatedTimeSpent }}</span>
-                &nbsp;
-                <span >{{ $trd(item.createdAt) }}</span>
-                {{ item.createdBy }}
+            <q-item>
+              <q-item-section>
+                <q-item-label> {{ item.formatedTimeSpent }} by {{ item.createdBy }}</q-item-label>
+                <q-item-label caption lines="2">{{ $trd(item.createdAt)}}</q-item-label>
+              </q-item-section>
 
-                </q-chip>
-              </div>                
+              <q-item-section side top>
+                <q-item-label caption><q-btn
+                  label="delete"
+                  @click="deleteTimeLog(item)"
+                />
+              </q-item-label>
+                
+              </q-item-section>
+            </q-item>
           </template>
-        </div>
+          </q-list>
+        
+      </div>
+
+
       </q-card-section>
       <q-card-actions align="right"  class="q-px-md q-pb-md">
         <q-btn
