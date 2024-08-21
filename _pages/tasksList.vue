@@ -74,6 +74,14 @@
       </template>
       </dynamicList>
     </div>
+    <q-dialog v-model="timeLogs.modal">
+      <timeLogsComponent        
+       :row="timeLogs.row"
+       @closeModal="timeLogs.modal = false"
+       @reloadRow="(row) => reloadRow(row)"
+      />
+    </q-dialog>
+    
     <inner-loading :visible="loading"/>
   </div>
 </template>
@@ -93,7 +101,8 @@ export default {
   components: {
     dynamicList,
     statusComponent,
-    priorityComponent
+    priorityComponent,
+    timeLogsComponent
   },
   watch: {},
   mounted() {
@@ -103,6 +112,10 @@ export default {
   },
   data() {
     return {
+      timeLogs: {
+        modal: false,
+        row: null
+      },      
       tabs: [
         {
           value: 'table',
@@ -266,6 +279,7 @@ export default {
                 }
               },
             },
+            /*
             {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'left', 
               style: "max-width: 300px;",
               dynamicField: {
@@ -281,6 +295,7 @@ export default {
                 }
               },          
             },
+            */
             {name: 'formatedEstimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'formatedEstimatedTime', align: 'center'},
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
@@ -309,9 +324,15 @@ export default {
               },
             },
             {
-              name: 'timeLogs', label: 'Time Logs', field: 'timeLogs', align: 'left',
-              component: timeLogsComponent,
-              //format: val => val ? this.$trd(val) : '-',
+              name: 'totalFormatedTimelogsDuration', label: 'Time Logs', field: 'totalFormatedTimelogsDuration', align: 'left',
+              //component: timeLogsComponent,
+              format: (val) => {                
+                return val ? val : '-'
+              },
+              onClick: ({row})  => {
+                this.openTimeLogsModal(row)
+                console.log(row)
+              }
             },            
             {
               name: 'actions', label: this.$tr('isite.cms.form.actions'), 
@@ -616,7 +637,16 @@ export default {
         const to = moment(value.to).format(dateFormat)
         if(from != this.date.from || to != this.date.to ) this.setDate(from, to)
       }
+    }, 
+    openTimeLogsModal(row){
+      this.timeLogs.modal = true
+      this.timeLogs.row = row
+    }, 
+    reloadRow(row){
+      console.log('reload me')
+      this.$refs.dynamicList.reloadRow(row)
     }
+
   }
 }
 </script>

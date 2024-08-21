@@ -6,7 +6,7 @@
       outline
       text-color="white"
       :color="state.color"
-      class="q-py-none"
+      class="q-py-none full-width"
       size="14px"
     >      
       <i v-if="state?.icon" :class="state.icon"></i>
