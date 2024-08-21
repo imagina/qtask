@@ -1,66 +1,84 @@
-<template>    
-    <q-card style="width: 300px;">
-      <q-card-section class="bg-white"> 
-        <div class="row col-12">
-          <h4>Seguimiento de tiempo</h4>
-        </div>
-        <div class="row col-12">          
-          <dynamic-field
-            v-model="timeLogModel"
-            :field="timeLogField"
-            @update:model-value="(value) => $emit(value)"               
-            style="width: 246px;"
-          />
-          
-        </div>
-        <div class="row col">     
-          <q-list>
-          <template v-for="(item, itemKey) in row.timelogs"  :key="itemKey" >            
+<template>
+  <div>
+    <div class="q-mb-md">
+      <p>
+        Registro: {{ row.totalFormatedTimelogsDuration }}
+      </p>
+    </div>
+    <div class="row q-gutter-x-md items-center">
+      <div class="q-gutter-y-xs">
+        <p>Fecha de inicio</p>
+        <dynamic-field
+          v-model="dateModel"
+          :field="dateField"
+          style="width: 160px;"
+        />
+      </div>
+      <div class="q-gutter-y-xs">
+        <p>Tiempo empleado</p>
+        <dynamic-field
+          v-model="timeSpentModel"
+          :field="timeSpentField"
+          style="width: 160px;"
+        />
+      </div>
+      <div class="q-gutter-y-xs">
+        <q-btn
+          :label="$tr('isite.cms.label.save')"
+          rounded
+          no-caps
+          unelevated
+          color="primary"
+          @click="() => createTimeLog()"
+          :disable="disableButton"
+        />
+      </div>
+    </div>
+    <div class="q-pa-md">
+      <p>Usa este formato: 2w 4d 6h 45m</p>
+      <ul>
+        <li>w = semanas</li>
+        <li>d = días</li>
+        <li>h = horas</li>
+        <li>m = minutos</li>
+      </ul>
+    </div>
+    <div class="q-mt-sm" v-if="row.timelogs?.length">
+      <q-separator class="q-my-sm"/>
+      <q-scroll-area style="height: 220px;" visible>
+        <q-list>
+          <template v-for="(item, itemKey) in row.timelogs"  :key="itemKey">
             <q-item>
               <q-item-section>
-                <q-item-label> {{ item.formatedTimeSpent }} by {{ item.createdBy }}</q-item-label>
-                <q-item-label caption lines="2">{{ $trd(item.createdAt)}}</q-item-label>
+                <q-item-label class="q-gutter-x-xs">
+                  <span class="text-weight-medium">{{ createdBy(item) }}</span>
+                  <span>{{ item.formatedTimeSpent }}</span>
+                </q-item-label>
+                <q-item-label caption lines="1">{{ $trd(item.createdAt)}}</q-item-label>
               </q-item-section>
 
               <q-item-section side top>
-                <q-item-label caption><q-btn
-                  label="delete"
-                  @click="deleteTimeLog(item)"
-                />
-              </q-item-label>
-                
+                <q-item-label caption>
+                  <q-btn
+                    :label="$tr('isite.cms.label.delete')"
+                    @click="deleteTimeLog(item)"
+                    rounded
+                    no-caps
+                    unelevated
+                    dense
+                    color="grey-3"
+                    text-color="grey-8"
+                    class="q-px-md"
+                  />
+                </q-item-label>
               </q-item-section>
             </q-item>
           </template>
-          </q-list>
-        
-      </div>
-
-
-      </q-card-section>
-      <q-card-actions align="right"  class="q-px-md q-pb-md">
-        <q-btn
-          :label="$tr('notification.cms.cancel')"
-          rounded
-          no-caps
-          unelevated
-          color="grey-3"
-          text-color="grey-8"
-          @click="$emit('closeModal')"
-          class="q-px-md"
-        />
-        <q-btn
-          label="Save"
-          rounded
-          no-caps
-          unelevated
-          color="grey-3"
-          text-color="grey-8"
-          @click="() => createTimeLog()"
-          class="q-px-md"
-        />
-      </q-card-actions>
-    </q-card>
+        </q-list>
+      </q-scroll-area>
+    </div>
+    <inner-loading :visible="loading"/>
+  </div>
   
   </template>
   <script lang="ts">
@@ -69,31 +87,11 @@
   
   export default defineComponent({
     props: {
-      row: {default: {}},
-      col: {default: {}},
-      data: {default: {}}
+      row: {default: {}}
     },
     setup(props, {emit}) {
       return controller(props, emit)
-    }, 
-    computed: {
-    },
-    data(){
-      return {        
-        timeLogField: {
-          value: '',
-          type: 'input',
-          props: {
-            label: 'Tiempo empleado',
-            rules: [
-              val => !!val || this.$tr('isite.cms.message.fieldRequired')
-            ],          
-          },
-        },
-      }
-    },
-    
-    
+    }
   })
   </script>
   <style lang="scss">

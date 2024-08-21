@@ -74,14 +74,19 @@
       </template>
       </dynamicList>
     </div>
-    <q-dialog v-model="timeLogs.modal">
-      <timeLogsComponent        
-       :row="timeLogs.row"
-       @closeModal="timeLogs.modal = false"
-       @reloadRow="(row) => reloadRow(row)"
+    <master-modal
+      v-model="timeLogs.modal"
+      title="Seguimiento de tiempo"
+      width="460px"
+      @hide="timeLogs.modal = false"
+    >
+      <timeLogsComponent
+        :row="timeLogs.row"
+        @closeModal="timeLogs.modal = false"
+        @reloadRow="(row) => reloadRow(row)"
       />
-    </q-dialog>
-    
+    </master-modal>
+
     <inner-loading :visible="loading"/>
   </div>
 </template>
@@ -331,7 +336,6 @@ export default {
               },
               onClick: ({row})  => {
                 this.openTimeLogsModal(row)
-                console.log(row)
               }
             },            
             {
@@ -340,7 +344,7 @@ export default {
             },
           ],
           requestParams: {
-            include: 'category,status,priority,timelogs,assignedTo', 
+            include: 'category,status,priority,timelogs.creator,assignedTo',
             filter: {
               rangeDate: {
                 from: moment().startOf('week').format(dateFormat),  
@@ -643,10 +647,8 @@ export default {
       this.timeLogs.row = row
     }, 
     reloadRow(row){
-      console.log('reload me')
       this.$refs.dynamicList.reloadRow(row)
     }
-
   }
 }
 </script>

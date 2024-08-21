@@ -1,17 +1,19 @@
 <template>
   <div 
     v-if="data"
+    style="width: 90px;"
   >
     <q-chip 
       outline
       text-color="white"
       :color="state.color"
       class="q-py-none full-width"
-      size="14px"
-    >      
+    >
+    <div class="full-width">
       <i v-if="state?.icon" :class="state.icon"></i>
       &nbsp;{{ date }}
       <q-tooltip>{{ data }}</q-tooltip>
+    </div>
     </q-chip>
   </div>
   </template>
