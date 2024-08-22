@@ -2,12 +2,12 @@
   <div>
     <div class="q-mb-md">
       <p>
-        Registro: {{ row.totalFormatedTimelogsDuration }}
+        {{ $tr('itask.cms.timeLogs.total') }} : {{ row.totalFormatedTimelogsDuration }}
       </p>
     </div>
     <div class="row q-gutter-x-md items-center">
       <div class="q-gutter-y-xs">
-        <p>Fecha de inicio</p>
+        <p>{{ $tr('itask.cms.timeLogs.startDate') }}</p>
         <dynamic-field
           v-model="dateModel"
           :field="dateField"
@@ -15,7 +15,7 @@
         />
       </div>
       <div class="q-gutter-y-xs">
-        <p>Tiempo empleado</p>
+        <p>{{ $tr('itask.cms.timeLogs.timeSpent') }}</p>
         <dynamic-field
           v-model="timeSpentModel"
           :field="timeSpentField"
@@ -34,13 +34,13 @@
         />
       </div>
     </div>
-    <div class="q-pa-md">
-      <p>Usa este formato: 2w 4d 6h 45m</p>
-      <ul>
-        <li>w = semanas</li>
-        <li>d = días</li>
-        <li>h = horas</li>
-        <li>m = minutos</li>
+    <div class="q-py-md">
+      <p>{{ $tr('itask.cms.timeLogs.format.title') }}</p>
+      <ul class="time-logs-format">
+        <li>{{ $tr('itask.cms.timeLogs.format.weeks') }}</li>
+        <li>{{ $tr('itask.cms.timeLogs.format.days') }}</li>
+        <li>{{ $tr('itask.cms.timeLogs.format.hours') }}</li>
+        <li>{{ $tr('itask.cms.timeLogs.format.minutes') }}</li>
       </ul>
     </div>
     <div class="q-mt-sm" v-if="row.timelogs?.length">
@@ -95,4 +95,8 @@
   })
   </script>
   <style lang="scss">
+  .time-logs-format {
+    list-style: disc;
+    padding-left: 20px;
+  }
   </style>

@@ -64,7 +64,7 @@ export default function controller(props, emit) {
       alert.error({
         mode: 'modal',
         title: `ID: ${timelog.id}`,
-        message: 'Estás seguro que quieres eliminar este registro de trabajo',
+        message: i18n.tr('isite.cms.message.deleteRecord'),
         actions: [
           { label: i18n.tr('isite.cms.label.cancel'), color: 'grey' },
           {
@@ -100,7 +100,10 @@ export default function controller(props, emit) {
 
       timeSpent.forEach(element => {
         const str = element.toLowerCase()
-        //last char
+        /*
+        get last char if not valid or missing 
+        ignores it and takes the time in minutes
+        */
         const type = types.includes(str.slice(-1)) ? str.slice(-1) : types[0]
         let time = types.includes(str.slice(-1)) ? Number(str.slice(0, -1)) : Number(str)
 

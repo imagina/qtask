@@ -41,7 +41,7 @@
               @click="goToPrevious()"
             >
               <q-tooltip anchor="bottom middle" self="top middle">
-                Previous week
+                {{ $tr('itask.cms.previousWeek') }}
               </q-tooltip>
             </q-btn>
           </div>
@@ -67,7 +67,7 @@
               @click="goToNext()"
             >
               <q-tooltip anchor="bottom middle" self="top middle">
-                Next week
+                {{ $tr('itask.cms.nextWeek') }}
               </q-tooltip>
             </q-btn>
           </div>
@@ -85,10 +85,9 @@
       @deleted="refreshDynamicList()"
     />
 
-
     <master-modal
       v-model="timeLogs.modal"
-      title="Seguimiento de tiempo"
+      :title="$tr('itask.cms.timeLogs.title')"
       width="460px"
       @hide="timeLogs.modal = false"
     >
@@ -106,7 +105,6 @@
 //Components
 import dynamicList from 'modules/qsite/_components/master/dynamicList'
 import statusComponent from 'modules/qtask/_components/status'
-import priorityComponent from 'modules/qtask/_components/priority'
 import dateComponent from 'modules/qtask/_components/date'
 import timeLogsComponent from 'modules/qtask/_components/timeLogs'
 import moment from 'moment';
@@ -118,7 +116,6 @@ export default {
   components: {
     dynamicList,
     statusComponent,
-    priorityComponent,
     timeLogsComponent
   },
   watch: {},
@@ -168,10 +165,10 @@ export default {
         permission: 'itask.tasks',
         search: true,
         create: {
-          title: 'New Task',
+          title: this.$tr('itask.cms.newTask'),
         },
         read: {
-          title: "Task Management",
+          title: this.$tr('itask.cms.taskManagement'),
           tableProps: {
             dense: true
           },
@@ -244,7 +241,7 @@ export default {
               }
             },
             {
-              name: 'duration', label: 'duration', field: 'duration', align: 'center',
+              name: 'duration', label: this.$tr('itask.cms.duration'), field: 'duration', align: 'center',
               classes: "padding-none",
               headerClasess: "padding-none",
               format: ({val}) => val ? val : '-',
@@ -278,7 +275,7 @@ export default {
               name: 'priority', label: this.$tr('itask.cms.form.priority'), field: 'priority', align: 'center',
               classes: "padding-none",
               headerClasess: "padding-none",
-              component: priorityComponent, 
+              component: statusComponent, 
               dynamicField: {
                 value: [],
                 type: 'select',
@@ -336,7 +333,7 @@ export default {
               },
             },
             {
-              name: 'totalFormatedTimelogsDuration', label: 'Time Logs', field: 'totalFormatedTimelogsDuration', align: 'left',
+              name: 'totalFormatedTimelogsDuration', label: this.$tr('itask.cms.timeLogs.title'), field: 'totalFormatedTimelogsDuration', align: 'left',
               format: ({val}) => val ? val : '-',
               onClick: ({row})  => {
                 this.openTimeLogsModal(row)
@@ -434,24 +431,27 @@ export default {
               }
             },            
           },
+          
           help: {
-            title: this.$tr("Task Management"),
-            description: this.$tr("Task Management")
+            title: this.$tr('itask.cms.taskManagement'),
+            description: this.$tr('itask.cms.taskManagement')
           },
+          
         },
         update: {
-          title: 'Update task'
+          title: this.$tr('itask.cms.taskManagement')
         },
-        beforeUpdate: (val) => {
+        //runs before update the row
+        beforeUpdate: ({val, row}) => {
           return new Promise((resolve, reject) => {
             //check startDate should be minor than dateFormat
-            if(val.description == '') reject(val)
+            if(row.description == '') reject(row)
             
-            if(moment(val.startDate).format(dateFormat) > moment(val.endDate).format(dateFormat)){
-              this.$alert.error({message: 'start date is bigger than end date'})
-              reject(val)
+            if(moment(row.startDate).format(dateFormat) > moment(row.endDate).format(dateFormat)){
+              this.$alert.error({message: this.$tr('itask.cms.date.error')})
+              reject(row)
             } else {
-              resolve(val)
+              resolve(row)
             }
           })
         },
@@ -459,7 +459,7 @@ export default {
           {//Open timelogs
             icon: 'fa-light fa-timer',
             name: 'addTimelog',
-            label: 'Timelog',
+            label: this.$tr('itask.cms.timeLogs.title'),
             action: (item) => {
               this.openTimeLogsModal(item)
             }
@@ -469,13 +469,13 @@ export default {
             name: 'edit',
             label: this.$tr('isite.cms.label.edit'),
             action: (item) => {
-              this.$refs.crudComponent.update(item)              
+              this.$refs.crudComponent.update(item)
             }
           },
           {//Delete action
             icon: 'fa-light fa-trash-can',
             name: 'delete',
-            label: this.$tr('isite.cms.label.delete'),          
+            label: this.$tr('isite.cms.label.delete'),
             action: (item) => {
               this.$refs.crudComponent.delete(item)
             }
@@ -488,7 +488,7 @@ export default {
     dynamicListTitle(){
       const from = moment(this.date.from).format('MMM Do')
       const to = moment(this.date.to).format('MMM Do')
-      return `Week:  ${from} - ${to}`
+      return `${this.$tr('isite.cms.week')}:  ${from} - ${to}`
     }, 
     
   },
