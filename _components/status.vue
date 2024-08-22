@@ -1,13 +1,13 @@
 <template>
     <div
-      v-if="data"
+      v-if="val"
       :style="{ 'background-color': background, 'color': color}"
       v-ripple
     >
       <div class="flex justify-center items-center " style="width: 140px;  height: 36px; padding: 8px;">
         <div class="ellipsis">
-          <i v-if="data?.icon" :class="data?.icon"></i>&nbsp;
-          {{ data.title }}
+          <i v-if="val?.icon" :class="val?.icon"></i>&nbsp;
+          {{ val.title }}
         </div>
       </div>
     </div>
@@ -19,14 +19,14 @@
     props: {
       row: {default: {}},
       col: {default: {}},
-      data: {default: {}}
+      val: {default: {}}
     },
     computed: {
       background(){
-        return this.data?.color ? this.data.color : '#000000'
+        return this.val?.color ? this.val.color : '#000000'
       }, 
       color(){
-        return this.data?.color ? '#ffffff' : '#000000'
+        return this.val?.color ? '#ffffff' : '#000000'
       }
     }
   })

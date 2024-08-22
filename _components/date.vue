@@ -1,6 +1,6 @@
 <template>
   <div 
-    v-if="data"
+    v-if="val"
     style="width: 90px;"
   >
     <q-chip 
@@ -12,7 +12,7 @@
     <div class="full-width">
       <i v-if="state?.icon" :class="state.icon"></i>
       &nbsp;{{ date }}
-      <q-tooltip>{{ data }}</q-tooltip>
+      <q-tooltip>{{ val }}</q-tooltip>
     </div>
     </q-chip>
   </div>
@@ -37,14 +37,14 @@
     props: {
       row: {default: {}},
       col: {default: {}},
-      data: {default: {}}
+      val: {default: {}}
     },
     computed: {
       state(){
-        return moment().format(dateFormat) > moment(this.data).format(dateFormat) ? states.expired : states.notExpired
+        return moment().format(dateFormat) > moment(this.val).format(dateFormat) ? states.expired : states.notExpired
       }, 
       date(){
-        return moment(this.data).format('MMM D')
+        return moment(this.val).format('MMM D')
       }
     }
   })
