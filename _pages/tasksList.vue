@@ -24,7 +24,8 @@
       <dynamicList
         v-if="tabModel == tabs[0].value"        
         ref="dynamicList"
-        :listData="listData"        
+        :listData="listData"
+        @new="() => $refs.crudComponent.create()"
       >
       <!-- date range and week navigation -->      
       <template #top-table>
@@ -74,6 +75,17 @@
       </template>
       </dynamicList>
     </div>
+
+    <crud 
+      ref="crudComponent"
+      :type="null"
+      :crud-data="import('modules/qtask/_crud/tasks')"
+      @created="refreshDynamicList()"
+      @updated="refreshDynamicList()"
+      @deleted="refreshDynamicList()"
+    />
+
+
     <master-modal
       v-model="timeLogs.modal"
       title="Seguimiento de tiempo"
@@ -283,28 +295,11 @@ export default {
                   }
                 }
               },
-            },
-            /*
-            {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'left', 
-              style: "max-width: 300px;",
-              dynamicField: {
-                name : "description",
-                maxWidth: '600px',
-                value: '',
-                type: 'html',
-                props: {
-                  label: `${this.$tr('isite.cms.form.description')}*`,
-                  rules: [
-                    val => !!val || this.$tr('isite.cms.message.fieldRequired')
-                  ],
-                }
-              },          
-            },
-            */
+            },           
             {name: 'formatedEstimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'formatedEstimatedTime', align: 'center'},
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
-              align: 'left', field: 'category', sortable: true,            
+              align: 'left', field: 'category',
               format: (val) => {
                 return val && val?.title ? val.title : '-'
               },
@@ -330,7 +325,6 @@ export default {
             },
             {
               name: 'totalFormatedTimelogsDuration', label: 'Time Logs', field: 'totalFormatedTimelogsDuration', align: 'left',
-              //component: timeLogsComponent,
               format: (val) => {                
                 return val ? val : '-'
               },
@@ -576,26 +570,30 @@ export default {
           })
         },
         actions: [
+          {//Open timelogs
+            icon: 'fa-light fa-timer',
+            name: 'addTimelog',
+            label: 'Timelog',
+            action: (item) => {
+              this.openTimeLogsModal(item)
+            }
+          },
           {//Edit action
             icon: 'fa-light fa-pencil',
             name: 'edit',
-            sortOrder: 99,
-            color: 'red',
             label: this.$tr('isite.cms.label.edit'),
             action: (item) => {
-              this.$refs.dynamicList.crud.update(item)              
+              this.$refs.crudComponent.update(item)              
             }
           },
           {//Delete action
             icon: 'fa-light fa-trash-can',
             name: 'delete',
-            sortOrder: 99,
-            color: 'red',
             label: this.$tr('isite.cms.label.delete'),          
             action: (item) => {
-              this.$refs.dynamicList.crud.delete(item)
+              this.$refs.crudComponent.delete(item)
             }
-          },
+          },          
         ]      
       }
     }
@@ -643,8 +641,8 @@ export default {
       }
     }, 
     openTimeLogsModal(row){
-      this.timeLogs.modal = true
       this.timeLogs.row = row
+      this.timeLogs.modal = true
     }, 
     reloadRow(row){
       this.$refs.dynamicList.reloadRow(row)
