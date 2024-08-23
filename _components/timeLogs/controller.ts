@@ -82,7 +82,6 @@ export default function controller(props, emit) {
       })
     },
     reloadRow(){
-      emit('closeModal')        
       emit('reloadRow', props.row)
     },
     

@@ -531,8 +531,11 @@ export default {
       this.timeLogs.row = row
       this.timeLogs.modal = true
     }, 
-    reloadRow(row){
-      this.$refs.dynamicList.reloadRow(row)
+    async reloadRow(row){
+      const newRow = await this.$refs.dynamicList.reloadRow(row)
+      if(this.timeLogs.modal){
+        this.timeLogs.row = newRow
+      }
     }
   }
 }
