@@ -25,13 +25,12 @@ export default function controller(props, emit) {
     },
     timeSpentModel: null,
     timeSpentField: {
-      type: 'input',
+      type: 'timeSpent',
       props: {
-        rules: [
-          val => !!val || i18n.tr('isite.cms.message.fieldRequired')
-        ]
+        //label: i18n.tr('itask.cms.timeLogs.timeSpent') ,
+        unit: 'minutes'
       }
-    }
+    },
   })
 
   // Computed
@@ -49,12 +48,13 @@ export default function controller(props, emit) {
     createTimeLog(){
       const data = {
         taskId: props.row.id,
-        timeSpent: methods.setTimeSpent(),
+        timeSpent: state.timeSpentModel,
         createdAt: state.dateModel ?  state.dateModel : moment().format(dateFormat)
       }
 
       state.loading = true
       services.createItem(apiRoute, data).then((response) => {
+        state.timeSpentModel = null
         state.loading = false
         alert.info({message: i18n.tr('isite.cms.message.recordCreated')});
         methods.reloadRow()
@@ -73,8 +73,8 @@ export default function controller(props, emit) {
             handler: async () => {
               state.loading = true
               services.deleteItem(apiRoute, timelog.id).then((response) => {
-                state.loading = false
                 methods.reloadRow()
+                state.loading = false                
               })
             }
           }
@@ -87,39 +87,6 @@ export default function controller(props, emit) {
     
     createdBy(item){
       return item.creator?.firstName ? `${item.creator.firstName} ${item.creator.lastName}` : item.creator.email
-    },
-    setTimeSpent(){
-      const types = ['m', 'h', 'd', 'w']
-      const hour = 60; //mins
-      const day = hour * 24;
-      const week = day * 7;
-
-      let timeSpent = state.timeSpentModel.toString().split(' ')
-      let totalTimeSpent = 0
-
-      timeSpent.forEach(element => {
-        const str = element.toLowerCase()
-        /*
-        get last char if not valid or missing 
-        ignores it and takes the time in minutes
-        */
-        const type = types.includes(str.slice(-1)) ? str.slice(-1) : types[0]
-        let time = types.includes(str.slice(-1)) ? Number(str.slice(0, -1)) : Number(str)
-
-        switch (type) {
-          case types[1]:
-            time = time * hour
-            break;
-          case types[2]:
-            time = time * day
-            break;
-          case types[3]:
-            time = time * week
-            break;
-        }
-        totalTimeSpent = totalTimeSpent + time
-      });
-      return totalTimeSpent
     }
   }
 
