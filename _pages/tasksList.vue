@@ -24,8 +24,10 @@
       <dynamicList
         v-if="tabModel == tabs[0].value"        
         ref="dynamicList"
-        :listData="listData"        
-      >      
+        :listData="listData"
+        @new="() => $refs.crudComponent.create()"
+      >
+      <!-- date range and week navigation -->      
       <template #top-table>
         <div class="tw-w-full tw-flex q-my-md items-center">
           <div>
@@ -39,7 +41,7 @@
               @click="goToPrevious()"
             >
               <q-tooltip anchor="bottom middle" self="top middle">
-                Previous week
+                {{ $tr('itask.cms.previousWeek') }}
               </q-tooltip>
             </q-btn>
           </div>
@@ -65,7 +67,7 @@
               @click="goToNext()"
             >
               <q-tooltip anchor="bottom middle" self="top middle">
-                Next week
+                {{ $tr('itask.cms.nextWeek') }}
               </q-tooltip>
             </q-btn>
           </div>
@@ -73,6 +75,29 @@
       </template>
       </dynamicList>
     </div>
+
+    <crud 
+      ref="crudComponent"
+      :type="null"
+      :crud-data="import('modules/qtask/_crud/tasks')"
+      @created="refreshDynamicList()"
+      @updated="refreshDynamicList()"
+      @deleted="refreshDynamicList()"
+    />
+
+    <master-modal
+      v-model="timeLogs.modal"
+      :title="$tr('itask.cms.timeLogs.title')"
+      width="460px"
+      @hide="timeLogs.modal = false"
+    >
+      <timeLogsComponent
+        :row="timeLogs.row"
+        @closeModal="timeLogs.modal = false"
+        @reloadRow="(row) => reloadRow(row)"
+      />
+    </master-modal>
+
     <inner-loading :visible="loading"/>
   </div>
 </template>
@@ -80,9 +105,8 @@
 //Components
 import dynamicList from 'modules/qsite/_components/master/dynamicList'
 import statusComponent from 'modules/qtask/_components/status'
-import priorityComponent from 'modules/qtask/_components/priority'
 import dateComponent from 'modules/qtask/_components/date'
-import daysComponent from 'modules/qtask/_components/days'
+import timeLogsComponent from 'modules/qtask/_components/timeLogs'
 import moment from 'moment';
 
 const dateFormat = 'YYYY/MM/DD'
@@ -92,7 +116,7 @@ export default {
   components: {
     dynamicList,
     statusComponent,
-    priorityComponent
+    timeLogsComponent
   },
   watch: {},
   mounted() {
@@ -102,6 +126,10 @@ export default {
   },
   data() {
     return {
+      timeLogs: {
+        modal: false,
+        row: null
+      },
       tabs: [
         {
           value: 'table',
@@ -137,17 +165,19 @@ export default {
         permission: 'itask.tasks',
         search: true,
         create: {
-          title: 'New Task',
+          title: this.$tr('itask.cms.newTask'),
         },
         read: {
-          title: "Task Management",
-          showAs: 'custom',
+          title: this.$tr('itask.cms.taskManagement'),
           tableProps: {
             dense: true
           },
           columns: [
-            {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: ''},
-            {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth',
+            {
+              name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: ''
+            },
+            {
+              name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth',
               style: "max-width: 200px;width: 200px;", 
               dynamicField: {
                 value: '',
@@ -160,16 +190,15 @@ export default {
                 },
               },
             },
-            {name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
-              format: val => ((val && (val.firstName || val.lastName) ) ? `${val.firstName} ${val.lastName}` : '-'),
+            {
+              name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
+              format: ({val}) => ((val && (val.firstName || val.lastName) ) ? `${val.firstName} ${val.lastName}` : '-'),
               dynamicField: {
                 value: [],
                 type: 'select',
                 name: 'assignedToId',
                 props: {
                   label: this.$tr('itask.cms.form.assigned'),
-                  //multiple: true,
-                  //useChips: true,
                   useInput: true,
                   clearable: true,
                   rules: [
@@ -185,7 +214,8 @@ export default {
                 }
               },
             },
-            {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'center',
+            {
+              name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'center',
               classes: "padding-none",
               headerClasess: "padding-none",
               component: dateComponent,
@@ -197,7 +227,8 @@ export default {
                 }
               }
             },
-            {name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'center',
+            {
+              name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'center',
               classes: "padding-none",
               headerClasess: "padding-none",
               component: dateComponent,
@@ -209,11 +240,11 @@ export default {
                 }
               }
             },
-            {name: 'days', label: 'days', field: 'days', align: 'center',
+            {
+              name: 'duration', label: this.$tr('itask.cms.duration'), field: 'duration', align: 'center',
               classes: "padding-none",
               headerClasess: "padding-none",
-              component: daysComponent,
-              
+              format: ({val}) => val ? val : '-',
             },
             {
               name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'center', 
@@ -221,7 +252,6 @@ export default {
               headerClasess: "padding-none",
               component: statusComponent,
               dynamicField: {
-                //value: [],
                 type: 'select',
                 name: 'statusId',
                 props: {
@@ -241,10 +271,11 @@ export default {
                 }
               },
             },
-            {name: 'priority', label: this.$tr('itask.cms.form.priority'), field: 'priority', align: 'center',
+            {
+              name: 'priority', label: this.$tr('itask.cms.form.priority'), field: 'priority', align: 'center',
               classes: "padding-none",
               headerClasess: "padding-none",
-              component: priorityComponent, 
+              component: statusComponent, 
               dynamicField: {
                 value: [],
                 type: 'select',
@@ -265,28 +296,22 @@ export default {
                   }
                 }
               },
-            },
-            {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'left', 
-              style: "max-width: 300px;",
+            },           
+            {
+              name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'formatedEstimatedTime', align: 'center',
+              format: ({row}) => row?.formatedEstimatedTime ? row.formatedEstimatedTime : '-',
               dynamicField: {
-                name : "description",
-                value: '',
-                type: 'html',
+                name: 'estimatedTime',
+                type: 'input',
                 props: {
-                  label: `${this.$tr('isite.cms.form.description')}*`,
-                  rules: [
-                    val => !!val || this.$tr('isite.cms.message.fieldRequired')
-                  ],
+                  label: this.$tr('itask.cms.form.estimatedTime'),
                 }
-              },          
+              },
             },
-            {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'center'},
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
-              align: 'left', field: 'category', sortable: true,            
-              format: (val) => {
-                return val && val?.title ? val.title : '-'
-              },
+              align: 'left', field: 'category',
+              format: ({val}) => val && val?.title ? val.title : '-',
               dynamicField: {
                 value: [],
                 type: 'select',
@@ -308,30 +333,19 @@ export default {
               },
             },
             {
-              name: 'timeLogs', label: 'Time Logs', field: 'timeLogs', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
-            },
-            /*
-            {
-              name: 'createdAt', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
-            },
-            {
-              name: 'updatedAt', label: this.$tr('isite.cms.form.updatedAt'), field: 'updatedAt', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
-            },
-            {
-              name: 'deletedAt', label: this.$tr('itask.cms.form.deletedAt'), field: 'deletedAt', align: 'left',
-              format: val => val ? this.$trd(val) : '-',
-            },
-            */
+              name: 'totalFormatedTimelogsDuration', label: this.$tr('itask.cms.timeLogs.title'), field: 'totalFormatedTimelogsDuration', align: 'left',
+              format: ({val}) => val ? val : '-',
+              onClick: ({row})  => {
+                this.openTimeLogsModal(row)
+              }
+            },            
             {
               name: 'actions', label: this.$tr('isite.cms.form.actions'), 
               align: 'center',          
             },
           ],
           requestParams: {
-            include: 'category,status,priority,timelogs,assignedTo', 
+            include: 'category,status,priority,timelogs.creator,assignedTo',
             filter: {
               rangeDate: {
                 from: moment().startOf('week').format(dateFormat),  
@@ -345,8 +359,6 @@ export default {
               type: 'select',
               props: {
                 label: this.$tr('itask.cms.form.assigned'),
-                //multiple: true,
-                //useChips: true,
                 useInput: true,
                 clearable: true,                
                 rules: [
@@ -419,171 +431,55 @@ export default {
               }
             },            
           },
+          
           help: {
-            title: this.$tr("Dynamic table"),
-            description: this.$tr("this is the dynamic table description")
+            title: this.$tr('itask.cms.taskManagement'),
+            description: this.$tr('itask.cms.taskManagement')
           },
+          
         },
         update: {
-          title: 'Update task'
+          title: this.$tr('itask.cms.taskManagement')
         },
-        formLeft: {
-          id: {value: ''},
-          userId: {value: this.$store.state.quserAuth.userId},
-          title: {
-            value: '',
-            type: 'input',
-            props: {
-              label: `${this.$tr('isite.cms.form.title')}*`,
-              rules: [
-                val => !!val || this.$tr('isite.cms.message.fieldRequired')
-              ],
-            },
-          },
-          description: {
-            name : "description",
-            value: '',
-            type: 'html',
-            props: {
-              label: `${this.$tr('isite.cms.form.description')}*`,
-              rules: [
-                val => !!val || this.$tr('isite.cms.message.fieldRequired')
-              ],
-            }
-          },
-        },
-        formRight: {          
-          assignedToId: {
-            value: [],
-            type: 'select',
-            props: {
-              label: this.$tr('itask.cms.form.assigned'),
-              //multiple: true,
-              //useChips: true,
-              useInput: true,
-              rules: [
-                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-              ],
-            },
-            loadOptions: {
-              apiRoute: 'apiRoutes.quser.users',              
-              select: {
-                label: 'email',
-                id: item => `${item.id}`                
-              }
-            }
-          },
-          startDate: {
-            value: '',            
-            type: 'date',
-            props: {
-              label: this.$tr('isite.cms.form.startDate')
-             }
-          },        
-          endDate: {
-            value: '',            
-            type: 'date',
-            props: {
-              label: this.$tr('isite.cms.form.endDate'),
-            }
-          },
-          estimatedTime: {
-            value: '',            
-            type: 'input',
-            props: {
-              label: this.$tr('itask.cms.form.estimatedTime'),
-            }
-          
-          },
-          priorityId: {
-            value: [],
-            type: 'select',
-            props: {
-              label: this.$tr('itask.cms.form.priority'),             
-              useInput: true,
-              rules: [
-                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-              ],
-            },
-            loadOptions: {
-              apiRoute: 'apiRoutes.qtask.priorities',
-              select: {
-                label: 'title',
-                id: item => `${item.id}`
-              }
-            }
-          },
-          categoryId: {
-            value: [],
-            type: 'select',
-            props: {
-              label: this.$tr('isite.cms.form.category'),
-              useInput: true,
-              rules: [
-                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-              ],
-            },
-            loadOptions: {
-              apiRoute: 'apiRoutes.qtask.categories',
-              select: {
-                label: 'title',
-                id: item => `${item.id}`
-              }
-            }
-          },
-          statusId: {
-            value: [],
-            type: 'select',
-            props: {
-              label: this.$tr('isite.cms.form.status'),             
-              useInput: true,
-              rules: [
-                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-              ],
-            },
-            loadOptions: {
-              apiRoute: 'apiRoutes.qtask.statuses',
-              select: {
-                label: 'title',
-                id: item => `${item.id}`
-              }
-            }
-          },
-        },
-        beforeUpdate: (val) => {
+        //runs before update the row
+        beforeUpdate: ({val, row}) => {
           return new Promise((resolve, reject) => {
             //check startDate should be minor than dateFormat
-            if(val.description == '') reject(val)
+            if(row.description == '') reject(row)
             
-            if(moment(val.startDate).format(dateFormat) > moment(val.endDate).format(dateFormat)){
-              this.$alert.error({message: 'start date is bigger than end date'})
-              reject(val)
+            if(moment(row.startDate).format(dateFormat) > moment(row.endDate).format(dateFormat)){
+              this.$alert.error({message: this.$tr('itask.cms.date.error')})
+              reject(row)
             } else {
-              resolve(val)
+              resolve(row)
             }
           })
         },
         actions: [
+          {//Open timelogs
+            icon: 'fa-light fa-timer',
+            name: 'addTimelog',
+            label: this.$tr('itask.cms.timeLogs.title'),
+            action: (item) => {
+              this.openTimeLogsModal(item)
+            }
+          },
           {//Edit action
             icon: 'fa-light fa-pencil',
             name: 'edit',
-            sortOrder: 99,
-            color: 'red',
             label: this.$tr('isite.cms.label.edit'),
             action: (item) => {
-              this.$refs.dynamicList.crud.update(item)              
+              this.$refs.crudComponent.update(item)
             }
           },
           {//Delete action
             icon: 'fa-light fa-trash-can',
             name: 'delete',
-            sortOrder: 99,
-            color: 'red',
-            label: this.$tr('isite.cms.label.delete'),          
+            label: this.$tr('isite.cms.label.delete'),
             action: (item) => {
-              this.$refs.dynamicList.crud.delete(item)
+              this.$refs.crudComponent.delete(item)
             }
-          },
+          },          
         ]      
       }
     }
@@ -592,11 +488,12 @@ export default {
     dynamicListTitle(){
       const from = moment(this.date.from).format('MMM Do')
       const to = moment(this.date.to).format('MMM Do')
-      return `Week:  ${from} - ${to}`
+      return `${this.$tr('isite.cms.week')}:  ${from} - ${to}`
     }, 
     
   },
   methods: {
+    init(){},
     setDate(from, to){    
       this.date = {from, to}
       this.dateRangeFilter.value = {
@@ -629,6 +526,13 @@ export default {
         const to = moment(value.to).format(dateFormat)
         if(from != this.date.from || to != this.date.to ) this.setDate(from, to)
       }
+    }, 
+    openTimeLogsModal(row){
+      this.timeLogs.row = row
+      this.timeLogs.modal = true
+    }, 
+    reloadRow(row){
+      this.$refs.dynamicList.reloadRow(row)
     }
   }
 }
