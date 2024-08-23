@@ -19,15 +19,15 @@ export default {
         read: {
           columns: [
             {name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: 'width: 50px'},
-            {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth', isEditable: true},
-            {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'description', isEditable: true, style: 'width: 200px'},
-            {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'startDate', isEditable: true},
-            {name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'endDate', isEditable: true},
-            {name: 'statusId', label: this.$tr('isite.cms.form.status'), field: 'statusId', align: 'statusId', isEditable: true},
-            {name: 'priorityId', label: this.$tr('itask.cms.form.priority'), field: 'priorityId', align: 'priorityId', isEditable: true},
-            {name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'estimatedTime', align: 'estimatedTime', isEditable: true},
-            {name: 'assignedToId', label: this.$tr('itask.cms.form.assigned'), field: 'assignedToId', align: 'assignedToId', isEditable: true},
-            {name: 'categoryId', label: this.$tr('isite.cms.form.category'), field: 'categoryId', align: 'categoryId', isEditable: true},
+            {name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'center', isEditable: true},
+            {name: 'description', label: this.$tr('isite.cms.form.description'), field: 'description', align: 'center', isEditable: true, style: 'width: 200px'},
+            {name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'center', isEditable: true},
+            {name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'center', isEditable: true},
+            {name: 'statusId', label: this.$tr('isite.cms.form.status'), field: 'statusId', align: 'center', isEditable: true},
+            {name: 'priorityId', label: this.$tr('itask.cms.form.priority'), field: 'priorityId', align: 'center', isEditable: true},
+            {name: 'formatedEstimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'formatedEstimatedTime', align: 'center', isEditable: true},
+            {name: 'assignedToId', label: this.$tr('itask.cms.form.assigned'), field: 'assignedToId', align: 'center', isEditable: true},
+            {name: 'categoryId', label: this.$tr('isite.cms.form.category'), field: 'categoryId', align: 'center', isEditable: true},
             {
               name: 'created_at', label: this.$tr('isite.cms.form.createdAt'), field: 'createdAt', align: 'left',
               format: val => val ? this.$trd(val) : '-',
@@ -41,7 +41,10 @@ export default {
               format: val => val ? this.$trd(val) : '-',
             },
             {name: 'actions', label: this.$tr('isite.cms.form.actions'), align: 'left'},
-          ],          
+          ],
+          requestParams: {
+            include: 'category,status,priority,timelogs.creator,assignedTo',
+          },          
           filters: {
             assignedToId: {
             value: [],
@@ -144,10 +147,11 @@ export default {
             }
           },
           estimatedTime: {
-            value: '',            
-            type: 'input',
+            value: '',
+            type: 'timeSpent',            
             props: {
               label: this.$tr('itask.cms.form.estimatedTime'),
+              unit: 'minutes'
             }
           },
           priorityId: {

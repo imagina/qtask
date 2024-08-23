@@ -301,10 +301,12 @@ export default {
               name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'formatedEstimatedTime', align: 'center',
               format: ({row}) => row?.formatedEstimatedTime ? row.formatedEstimatedTime : '-',
               dynamicField: {
+                value: '',
                 name: 'estimatedTime',
-                type: 'input',
+                type: 'timeSpent',
                 props: {
                   label: this.$tr('itask.cms.form.estimatedTime'),
+                  unit: 'minutes'
                 }
               },
             },
@@ -531,8 +533,11 @@ export default {
       this.timeLogs.row = row
       this.timeLogs.modal = true
     }, 
-    reloadRow(row){
-      this.$refs.dynamicList.reloadRow(row)
+    async reloadRow(row){
+      const newRow = await this.$refs.dynamicList.reloadRow(row)
+      if(this.timeLogs.modal){
+        this.timeLogs.row = newRow
+      }
     }
   }
 }
