@@ -78,10 +78,12 @@ export default {
             }
           },
           parentId: {
-            value: '',            
-            type: 'input',
+            type: 'select',
             props: {
               label: this.$tr('isite.cms.form.parent'),
+            },
+            loadOptions: {
+              apiRoute: 'apiRoutes.qtask.categories'
             }
           },
         },
