@@ -76,6 +76,30 @@
       </dynamicList>
     </div>
 
+    <!--- show task modal --->
+    <master-modal
+      v-model="selectedRow.showModal"      
+      :title="`Task : ${selectedRow.row?.id}`"
+      width="720px"
+      @hide="selectedRow.showModal = false"      
+    > 
+      <taskComponent 
+       :row="selectedRow.row"
+       @openTimeLogsModal="(row) => openTimeLogsModal(row)"
+       >
+        <!-- <timeLogsComponent
+          :row="selectedRow.row"
+          @reloadRow="(row) => reloadRow(row)"
+        />
+        -->
+        
+      </taskComponent>
+      
+  
+    </master-modal>
+
+
+    <!-- crud form -->
     <crud 
       ref="crudComponent"
       :type="null"
@@ -85,15 +109,16 @@
       @deleted="refreshDynamicList()"
     />
 
+    <!-- modal for timelogs -->
     <master-modal
-      v-model="timeLogs.modal"
+      v-model="selectedRow.timeLogsModal"
       :title="$tr('itask.cms.timeLogs.title')"
       width="460px"
-      @hide="timeLogs.modal = false"
+      @hide="selectedRow.timeLogsModal = false"
     >
       <timeLogsComponent
-        :row="timeLogs.row"
-        @closeModal="timeLogs.modal = false"
+        :row="selectedRow.row"
+        @closeModal="selectedRow.timeLogsModal = false"
         @reloadRow="(row) => reloadRow(row)"
       />
     </master-modal>
@@ -107,6 +132,7 @@ import dynamicList from 'modules/qsite/_components/master/dynamicList'
 import statusComponent from 'modules/qtask/_components/status'
 import dateComponent from 'modules/qtask/_components/date'
 import timeLogsComponent from 'modules/qtask/_components/timeLogs'
+import taskComponent from 'modules/qtask/_components/task'
 import moment from 'moment';
 
 const dateFormat = 'YYYY/MM/DD'
@@ -116,7 +142,8 @@ export default {
   components: {
     dynamicList,
     statusComponent,
-    timeLogsComponent
+    timeLogsComponent,
+    taskComponent
   },
   watch: {},
   mounted() {
@@ -126,10 +153,12 @@ export default {
   },
   data() {
     return {
-      timeLogs: {
-        modal: false,
+      selectedRow: {
+        timeLogsModal: false,
+        showModal: false,
         row: null
       },
+      
       tabs: [
         {
           value: 'table',
@@ -174,21 +203,13 @@ export default {
           },
           columns: [
             {
-              name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: ''
+              name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: '',
+              onClick: ({row}) => this.openShowModal(row)
             },
             {
               name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth',
               style: "max-width: 200px;width: 200px;", 
-              dynamicField: {
-                value: '',
-                type: 'input',
-                props: {
-                  label: `${this.$tr('isite.cms.form.title')}*`,
-                  rules: [
-                    val => !!val || this.$tr('isite.cms.message.fieldRequired')
-                  ],
-                },
-              },
+              onClick: ({row}) => this.openShowModal(row)
             },
             {
               name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
@@ -458,12 +479,21 @@ export default {
           })
         },
         actions: [
+          //onClick: ({row}) => this.openShowModal(row)
           {//Open timelogs
             icon: 'fa-light fa-timer',
             name: 'addTimelog',
             label: this.$tr('itask.cms.timeLogs.title'),
             action: (item) => {
               this.openTimeLogsModal(item)
+            }
+          },
+          {//show action
+            icon: 'fa-light fa-eye',
+            name: 'edit',
+            label: this.$tr('isite.cms.label.show'),
+            action: (item) => {
+              this.openShowModal(item)
             }
           },
           {//Edit action
@@ -490,7 +520,7 @@ export default {
     dynamicListTitle(){
       const from = moment(this.date.from).format('MMM Do')
       const to = moment(this.date.to).format('MMM Do')
-      return `${this.$tr('isite.cms.week')}:  ${from} - ${to}`
+      return `${this.$tr('itask.cms.week')}:  ${from} - ${to}`
     }, 
     
   },
@@ -530,14 +560,16 @@ export default {
       }
     }, 
     openTimeLogsModal(row){
-      this.timeLogs.row = row
-      this.timeLogs.modal = true
+      this.selectedRow.row = row
+      this.selectedRow.timeLogsModal = true
     }, 
     async reloadRow(row){
       const newRow = await this.$refs.dynamicList.reloadRow(row)
-      if(this.timeLogs.modal){
-        this.timeLogs.row = newRow
-      }
+      this.selectedRow.row = newRow      
+    }, 
+    openShowModal(row){
+      this.selectedRow.row = row
+      this.selectedRow.showModal = true
     }
   }
 }
