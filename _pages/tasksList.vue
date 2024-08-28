@@ -80,24 +80,14 @@
     <master-modal
       v-model="selectedRow.showModal"      
       :title="`Task : ${selectedRow.row?.id}`"
-      width="720px"
+      width="460px"
       @hide="selectedRow.showModal = false"      
     > 
       <taskComponent 
        :row="selectedRow.row"
        @openTimeLogsModal="(row) => openTimeLogsModal(row)"
-       >
-        <!-- <timeLogsComponent
-          :row="selectedRow.row"
-          @reloadRow="(row) => reloadRow(row)"
-        />
-        -->
-        
-      </taskComponent>
-      
-  
+      />
     </master-modal>
-
 
     <!-- crud form -->
     <crud 

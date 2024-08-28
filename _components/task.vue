@@ -14,40 +14,51 @@
         </div>
       </div>
 
-      <div>
+      <div class="q-my-md">
         <span class="text-subtitle2 text-weight-bold">
-          {{ this.$tr('itask.cms.form.priority') }}: 
+          Details:
         </span>
-        {{ row.priority.title }}       
+        <div class="row">
+          <div class="col-3">          
+            {{ this.$tr('itask.cms.form.priority') }} :
+          </div>
+          <div class="col-9">
+            {{ row.priority.title }}       
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">          
+            {{ this.$tr('itask.cms.form.assigned') }}: 
+          </div>
+          <div class="col-9">
+            {{ assignedTo}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">          
+            {{ $tr('itask.cms.duration') }}: 
+          </div>
+          <div class="col-9">
+            {{ row.duration }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">          
+            {{ $tr('isite.cms.form.startDate') }}: 
+          </div>
+          <div class="col-9">
+            {{ row.startDate }}       
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">          
+            {{ $tr('isite.cms.form.endDate') }}: 
+          </div>
+          <div class="col-9">
+            {{ row.endDate }}       
+          </div>
+        </div>
       </div>
-
-      <div>
-        <span class="text-subtitle2 text-weight-bold">
-          {{ this.$tr('itask.cms.form.assigned') }}: 
-        </span>
-        {{ assignedTo}}
-      </div>
-
-
-      <div>
-        <span class="text-subtitle2 text-weight-bold">
-          {{ $tr('itask.cms.duration') }}: 
-        </span>
-        {{ row.duration }}       
-      </div>
-      <div>
-        <span class="text-subtitle2 text-weight-bold">
-          {{ $tr('isite.cms.form.startDate') }}: 
-        </span>
-        {{ row.startDate }}       
-      </div>
-      <div>
-        <span class="text-subtitle2 text-weight-bold">
-          {{ $tr('isite.cms.form.endDate') }}: 
-        </span>
-        {{ row.endDate }}
-      </div>     
-
       
 
       <!-- show timelogs-->
@@ -60,34 +71,16 @@
           class="q-mr-sm"
           unelevated
           no-caps
-          :label="`${$tr('itask.cms.timeLogs.total')} : ${row.totalFormatedTimelogsDuration}`"
+          :label="`${row.totalFormatedTimelogsDuration}`"
           @click="$emit('openTimeLogsModal', row)"
         />          
       </div>
     </div>
-
-
-      
-      
-      
-      
-      
-      
-    
-
-    
-    
-
-    
-    
   
   </div>
 </template>
   <script lang="ts">
-  import {defineComponent,  ref} from 'vue'
-  import moment from 'moment';
-
-  
+  import {defineComponent} from 'vue'
   
   export default defineComponent({
     props: {
