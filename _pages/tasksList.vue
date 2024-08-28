@@ -76,6 +76,23 @@
       </dynamicList>
     </div>
 
+    <!--- show task modal --->
+    <master-modal
+      v-model="selectedRow.showModal"      
+      :title="`Task : ${selectedRow.row?.id}`"
+      custom-position
+      @hide="selectedRow.showModal = false"
+    > 
+      <taskComponent 
+       :row="selectedRow.row"
+       @onClose="selectedRow.showModal = false"
+       @onUpdate="(row) => onUpdate(row)"
+       @onDelete="(row) => onDelete(row)"
+       @openTimeLogsModal="(row) => openTimeLogsModal(row)"
+      />
+    </master-modal>
+
+    <!-- crud form -->
     <crud 
       ref="crudComponent"
       :type="null"
@@ -85,15 +102,16 @@
       @deleted="refreshDynamicList()"
     />
 
+    <!-- modal for timelogs -->
     <master-modal
-      v-model="timeLogs.modal"
+      v-model="selectedRow.timeLogsModal"
       :title="$tr('itask.cms.timeLogs.title')"
       width="460px"
-      @hide="timeLogs.modal = false"
+      @hide="selectedRow.timeLogsModal = false"
     >
       <timeLogsComponent
-        :row="timeLogs.row"
-        @closeModal="timeLogs.modal = false"
+        :row="selectedRow.row"
+        @closeModal="selectedRow.timeLogsModal = false"
         @reloadRow="(row) => reloadRow(row)"
       />
     </master-modal>
@@ -107,6 +125,7 @@ import dynamicList from 'modules/qsite/_components/master/dynamicList'
 import statusComponent from 'modules/qtask/_components/status'
 import dateComponent from 'modules/qtask/_components/date'
 import timeLogsComponent from 'modules/qtask/_components/timeLogs'
+import taskComponent from 'modules/qtask/_components/task'
 import moment from 'moment';
 
 const dateFormat = 'YYYY/MM/DD'
@@ -116,7 +135,8 @@ export default {
   components: {
     dynamicList,
     statusComponent,
-    timeLogsComponent
+    timeLogsComponent,
+    taskComponent
   },
   watch: {},
   mounted() {
@@ -126,10 +146,12 @@ export default {
   },
   data() {
     return {
-      timeLogs: {
-        modal: false,
+      selectedRow: {
+        timeLogsModal: false,
+        showModal: false,
         row: null
       },
+      
       tabs: [
         {
           value: 'table',
@@ -174,21 +196,13 @@ export default {
           },
           columns: [
             {
-              name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: ''
+              name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: '',
+              onClick: ({row}) => this.openShowModal(row)
             },
             {
               name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth',
               style: "max-width: 200px;width: 200px;", 
-              dynamicField: {
-                value: '',
-                type: 'input',
-                props: {
-                  label: `${this.$tr('isite.cms.form.title')}*`,
-                  rules: [
-                    val => !!val || this.$tr('isite.cms.message.fieldRequired')
-                  ],
-                },
-              },
+              onClick: ({row}) => this.openShowModal(row)
             },
             {
               name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
@@ -458,6 +472,7 @@ export default {
           })
         },
         actions: [
+          //onClick: ({row}) => this.openShowModal(row)
           {//Open timelogs
             icon: 'fa-light fa-timer',
             name: 'addTimelog',
@@ -466,12 +481,20 @@ export default {
               this.openTimeLogsModal(item)
             }
           },
+          {//show action
+            icon: 'fa-light fa-eye',
+            name: 'edit',
+            label: this.$tr('isite.cms.label.show'),
+            action: (item) => {
+              this.openShowModal(item)
+            }
+          },
           {//Edit action
             icon: 'fa-light fa-pencil',
             name: 'edit',
             label: this.$tr('isite.cms.label.edit'),
             action: (item) => {
-              this.$refs.crudComponent.update(item)
+              this.onUpdate(item)
             }
           },
           {//Delete action
@@ -479,7 +502,7 @@ export default {
             name: 'delete',
             label: this.$tr('isite.cms.label.delete'),
             action: (item) => {
-              this.$refs.crudComponent.delete(item)
+              this.onDelete(item)
             }
           },          
         ]      
@@ -490,7 +513,7 @@ export default {
     dynamicListTitle(){
       const from = moment(this.date.from).format('MMM Do')
       const to = moment(this.date.to).format('MMM Do')
-      return `${this.$tr('isite.cms.week')}:  ${from} - ${to}`
+      return `${this.$tr('itask.cms.week')}:  ${from} - ${to}`
     }, 
     
   },
@@ -508,6 +531,11 @@ export default {
       this.refreshDynamicList()
     },
     refreshDynamicList(){
+      if(this.selectedRow.showModal || this.selectedRow.timeLogsModal ){
+        this.selectedRow.timeLogsModal = false 
+        this.selectedRow.showModal = false
+        this.selectedRow.row = null
+      }
       this.$refs.dynamicList.getData({pagination: {page: 0}}, true)
     },
     goToPrevious(){      
@@ -530,14 +558,22 @@ export default {
       }
     }, 
     openTimeLogsModal(row){
-      this.timeLogs.row = row
-      this.timeLogs.modal = true
+      this.selectedRow.row = row
+      this.selectedRow.timeLogsModal = true
     }, 
     async reloadRow(row){
       const newRow = await this.$refs.dynamicList.reloadRow(row)
-      if(this.timeLogs.modal){
-        this.timeLogs.row = newRow
-      }
+      this.selectedRow.row = newRow      
+    }, 
+    openShowModal(row){
+      this.selectedRow.row = row
+      this.selectedRow.showModal = true
+    }, 
+    onUpdate(row){
+      this.$refs.crudComponent.update(row)
+    }, 
+    onDelete(row){
+      this.$refs.crudComponent.delete(row)
     }
   }
 }

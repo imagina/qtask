@@ -181,22 +181,23 @@ export default {
             }
           },
           categoryId: {
-            value: [],
-            type: 'select',
+            value: null,
+            type: 'crud',
             props: {
-              label: this.$tr('isite.cms.form.category'),
-              useInput: true,
-              rules: [
-                val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-              ],
+              crudType: 'select',
+              crudData: import('modules/qtask/_crud/categories'),
+              customData: {
+                read: {
+                  requestParams: {include: 'parent', filter: {status: 1}}
+                }
+              },
+              crudProps: {
+                label: `${this.$tr('isite.cms.form.category')}*`,
+                rules: [
+                  val => !!val || this.$tr('isite.cms.message.fieldRequired')
+                ],
+              },
             },
-            loadOptions: {
-              apiRoute: 'apiRoutes.qtask.categories',
-              select: {
-                label: 'title',
-                id: item => `${item.id}`
-              }
-            }
           },
           statusId: {
             value: [],
