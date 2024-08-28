@@ -143,6 +143,7 @@ export default {
           startDate: {
             value: '',            
             type: 'date',
+            required: true,
             props: {
               label: this.$tr('isite.cms.form.startDate')
              }
@@ -150,6 +151,7 @@ export default {
           endDate: {
             value: '',            
             type: 'date',
+            required: true,
             props: {
               label: this.$tr('isite.cms.form.endDate'),
             }
