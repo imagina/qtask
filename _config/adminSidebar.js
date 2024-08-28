@@ -6,10 +6,10 @@ export default [
       title: 'itask.cms.sidebar.adminGroup',
       icon: 'fa-light fa-list-check',
       children: [
-        pages.qtask.priorities, 
-        pages.qtask.categories, 
-        pages.qtask.statuses,
         pages.qtask.tasksList,
+        pages.qtask.priorities,
+        pages.qtask.categories,
+        pages.qtask.statuses
       ]
     },
   ]

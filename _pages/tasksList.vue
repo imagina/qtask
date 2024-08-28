@@ -1,5 +1,5 @@
-<template>  
-    <div>
+<template>
+  <div>
     <!--Content-->
     <!-- tabs -->
     <div class="row">
@@ -15,85 +15,85 @@
           narrow-indicator
           style="align-items: center;"
         >
-          <q-tab v-for="(tab, index) in tabs" :key="index" :name="tab.value"  :label="tab.label" />
+          <q-tab v-for="(tab, index) in tabs" :key="index" :name="tab.value" :label="tab.label" />
         </q-tabs>
       </div>
     </div>
     <!-- tasks -->
     <div class="q-px-md">
       <dynamicList
-        v-if="tabModel == tabs[0].value"        
+        v-if="tabModel == tabs[0].value"
         ref="dynamicList"
         :listData="listData"
         @new="() => $refs.crudComponent.create()"
       >
-      <!-- date range and week navigation -->      
-      <template #top-table>
-        <div class="tw-w-full tw-flex q-my-md items-center">
-          <div>
-            <q-btn
-              text-color="primary"
-              class="q-mr-sm"
-              size="sm"
-              unelevated
-              round            
-              icon="fa-regular fa-chevron-left"
-              @click="goToPrevious()"
-            >
-              <q-tooltip anchor="bottom middle" self="top middle">
-                {{ $tr('itask.cms.previousWeek') }}
-              </q-tooltip>
-            </q-btn>
-          </div>
-          <div class="tw-w-full row">
-            <dynamic-field
+        <!-- date range and week navigation -->
+        <template #top-table>
+          <div class="tw-w-full tw-flex q-my-md items-center">
+            <div>
+              <q-btn
+                text-color="primary"
+                class="q-mr-sm"
+                size="sm"
+                unelevated
+                round
+                icon="fa-regular fa-chevron-left"
+                @click="goToPrevious()"
+              >
+                <q-tooltip anchor="bottom middle" self="top middle">
+                  {{ $tr('itask.cms.previousWeek') }}
+                </q-tooltip>
+              </q-btn>
+            </div>
+            <div class="tw-w-full row">
+              <dynamic-field
                 v-model="dateRangeFilter.value"
                 @update:model-value="(value) => setDateRange(value)"
                 :field="dateRangeFilter"
                 style="width: 246px;"
-            />
-            <div class="text-primary q-pa-md" style="font-size: 16px">
-              <div>{{ dynamicListTitle }}</div>
+              />
+              <div class="text-primary q-pa-md" style="font-size: 16px">
+                <div>{{ dynamicListTitle }}</div>
+              </div>
+            </div>
+            <div>
+              <q-btn
+                text-color="primary"
+                class="q-mr-sm"
+                size="sm"
+                unelevated
+                round
+                icon="fa-regular fa-chevron-right"
+                @click="goToNext()"
+              >
+                <q-tooltip anchor="bottom middle" self="top middle">
+                  {{ $tr('itask.cms.nextWeek') }}
+                </q-tooltip>
+              </q-btn>
             </div>
           </div>
-          <div>
-            <q-btn
-              text-color="primary"
-              class="q-mr-sm"
-              size="sm"
-              unelevated
-              round
-              icon="fa-regular fa-chevron-right"
-              @click="goToNext()"
-            >
-              <q-tooltip anchor="bottom middle" self="top middle">
-                {{ $tr('itask.cms.nextWeek') }}
-              </q-tooltip>
-            </q-btn>
-          </div>
-        </div>
-      </template>
+        </template>
       </dynamicList>
     </div>
 
     <!--- show task modal --->
     <master-modal
-      v-model="selectedRow.showModal"      
+      v-model="selectedRow.showModal"
       :title="`Task : ${selectedRow.row?.id}`"
       custom-position
       @hide="selectedRow.showModal = false"
-    > 
-      <taskComponent 
-       :row="selectedRow.row"
-       @onClose="selectedRow.showModal = false"
-       @onUpdate="(row) => onUpdate(row)"
-       @onDelete="(row) => onDelete(row)"
-       @openTimeLogsModal="(row) => openTimeLogsModal(row)"
+    >
+      <taskComponent
+        :row="selectedRow.row"
+        @onClose="selectedRow.showModal = false"
+        @onUpdate="(row) => onUpdate(row)"
+        @onDelete="(row) => onDelete(row)"
+        @openTimeLogsModal="(row) => openTimeLogsModal(row)"
       />
     </master-modal>
 
     <!-- crud form -->
-    <crud 
+    <crud
       ref="crudComponent"
       :type="null"
       :crud-data="import('modules/qtask/_crud/tasks')"
@@ -116,19 +116,19 @@
       />
     </master-modal>
 
-    <inner-loading :visible="loading"/>
+    <inner-loading :visible="loading" />
   </div>
 </template>
 <script>
 //Components
-import dynamicList from 'modules/qsite/_components/master/dynamicList'
-import statusComponent from 'modules/qtask/_components/status'
-import dateComponent from 'modules/qtask/_components/date'
-import timeLogsComponent from 'modules/qtask/_components/timeLogs'
-import taskComponent from 'modules/qtask/_components/task'
+import dynamicList from 'modules/qsite/_components/master/dynamicList';
+import statusComponent from 'modules/qtask/_components/status';
+import dateComponent from 'modules/qtask/_components/date';
+import timeLogsComponent from 'modules/qtask/_components/timeLogs';
+import taskComponent from 'modules/qtask/_components/task';
 import moment from 'moment';
 
-const dateFormat = 'YYYY/MM/DD'
+const dateFormat = 'YYYY/MM/DD';
 
 export default {
   props: {},
@@ -140,9 +140,9 @@ export default {
   },
   watch: {},
   mounted() {
-    this.$nextTick(function () {
+    this.$nextTick(function() {
       //this.init()
-    })
+    });
   },
   data() {
     return {
@@ -151,7 +151,7 @@ export default {
         showModal: false,
         row: null
       },
-      
+
       tabs: [
         {
           value: 'table',
@@ -160,24 +160,24 @@ export default {
         {
           value: 'backlog',
           label: 'Backlog'
-        },        
-      ],      
+        }
+      ],
       tabModel: 'table',
       date: {
-        from: moment().startOf('week').format(dateFormat),  
+        from: moment().startOf('week').format(dateFormat),
         to: moment().endOf('week').format(dateFormat)
       },
       dateRangeFilter: {
         value: {
           type: 'customRange',
-          from: moment().startOf('week').format(dateFormat),  
+          from: moment().startOf('week').format(dateFormat),
           to: moment().endOf('week').format(dateFormat)
         },
-        type: 'dateRange',        
+        type: 'dateRange',
         props: {
           label: 'Date',
           clearable: false,
-          removeTime: true, 
+          removeTime: true,
           autoClose: true
         }
       },
@@ -187,7 +187,7 @@ export default {
         permission: 'itask.tasks',
         search: true,
         create: {
-          title: this.$tr('itask.cms.newTask'),
+          title: this.$tr('itask.cms.newTask')
         },
         read: {
           title: this.$tr('itask.cms.taskManagement'),
@@ -197,16 +197,16 @@ export default {
           columns: [
             {
               name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: '',
-              onClick: ({row}) => this.openShowModal(row)
+              onClick: ({ row }) => this.openShowModal(row)
             },
             {
-              name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title', align: 'rigth',
-              style: "max-width: 200px;width: 200px;", 
-              onClick: ({row}) => this.openShowModal(row)
+              name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title',
+              align: 'rigth', style: 'max-width: 250px',
+              onClick: ({ row }) => this.openShowModal(row)
             },
             {
               name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
-              format: ({val}) => ((val && (val.firstName || val.lastName) ) ? `${val.firstName} ${val.lastName}` : '-'),
+              format: ({ val }) => ((val && (val.firstName || val.lastName)) ? `${val.firstName} ${val.lastName}` : '-'),
               dynamicField: {
                 value: [],
                 type: 'select',
@@ -217,7 +217,7 @@ export default {
                   clearable: true,
                   rules: [
                     val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-                  ],
+                  ]
                 },
                 loadOptions: {
                   apiRoute: 'apiRoutes.quser.users',
@@ -226,55 +226,52 @@ export default {
                     id: item => `${item.id}`
                   }
                 }
-              },
+              }
             },
             {
               name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'center',
-              classes: "padding-none",
-              headerClasess: "padding-none",
+              style: 'padding: 0 5px',
               component: dateComponent,
-              dynamicField: {          
-                value: '',            
+              dynamicField: {
+                value: '',
                 type: 'date',
                 props: {
-                  label: this.$tr('isite.cms.form.startDate'),
+                  label: this.$tr('isite.cms.form.startDate')
                 }
               }
             },
             {
               name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'center',
-              classes: "padding-none",
-              headerClasess: "padding-none",
+              style: 'padding: 0 5px',
               component: dateComponent,
-              dynamicField: {          
-                value: '',            
+              dynamicField: {
+                value: '',
                 type: 'date',
                 props: {
-                  label: this.$tr('isite.cms.form.endDate'),
+                  label: this.$tr('isite.cms.form.endDate')
                 }
               }
             },
             {
-              name: 'duration', label: this.$tr('itask.cms.duration'), field: 'duration', align: 'center',
-              classes: "padding-none",
-              headerClasess: "padding-none",
-              format: ({val}) => val ? val : '-',
+              name: 'duration', label: this.$tr('itask.cms.duration'), field: 'duration', align: 'left',
+              format: ({ val }) => val ? val : '-'
             },
             {
-              name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'center', 
-              classes: "padding-none",
-              headerClasess: "padding-none",
+              name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'center',
+              style: 'padding: 0 0 0 5px',
+              //classes: 'padding-none',
+              //headerClasess: 'padding-none',
               component: statusComponent,
               dynamicField: {
                 type: 'select',
                 name: 'statusId',
                 props: {
-                  label: this.$tr('isite.cms.form.status'),             
+                  label: this.$tr('isite.cms.form.status'),
                   useInput: true,
                   clearable: true,
                   rules: [
                     val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-                  ],
+                  ]
                 },
                 loadOptions: {
                   apiRoute: 'apiRoutes.qtask.statuses',
@@ -283,24 +280,23 @@ export default {
                     id: item => `${item.id}`
                   }
                 }
-              },
+              }
             },
             {
               name: 'priority', label: this.$tr('itask.cms.form.priority'), field: 'priority', align: 'center',
-              classes: "padding-none",
-              headerClasess: "padding-none",
-              component: statusComponent, 
+              style: 'padding: 0 5px 0 0',
+              component: statusComponent,
               dynamicField: {
                 value: [],
                 type: 'select',
                 name: 'priorityId',
                 props: {
-                  label: this.$tr('itask.cms.form.priority'),             
+                  label: this.$tr('itask.cms.form.priority'),
                   useInput: true,
                   clearable: true,
                   rules: [
                     val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-                  ],
+                  ]
                 },
                 loadOptions: {
                   apiRoute: 'apiRoutes.qtask.priorities',
@@ -309,11 +305,14 @@ export default {
                     id: item => `${item.id}`
                   }
                 }
-              },
-            },           
+              }
+            },
             {
-              name: 'estimatedTime', label: this.$tr('itask.cms.form.estimatedTime'), field: 'formatedEstimatedTime', align: 'center',
-              format: ({row}) => row?.formatedEstimatedTime ? row.formatedEstimatedTime : '-',
+              name: 'estimatedTime',
+              label: this.$tr('itask.cms.form.estimatedTime'),
+              field: 'formatedEstimatedTime',
+              align: 'left',
+              format: ({ row }) => row?.formatedEstimatedTime ? row.formatedEstimatedTime : '-',
               dynamicField: {
                 value: '',
                 name: 'estimatedTime',
@@ -322,12 +321,12 @@ export default {
                   label: this.$tr('itask.cms.form.estimatedTime'),
                   unit: 'minutes'
                 }
-              },
+              }
             },
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
               align: 'left', field: 'category',
-              format: ({val}) => val && val?.title ? val.title : '-',
+              format: ({ val }) => val && val?.title ? val.title : '-',
               dynamicField: {
                 value: [],
                 type: 'select',
@@ -337,7 +336,7 @@ export default {
                   useInput: true,
                   rules: [
                     val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-                  ],
+                  ]
                 },
                 loadOptions: {
                   apiRoute: 'apiRoutes.qtask.categories',
@@ -346,25 +345,28 @@ export default {
                     id: item => `${item.id}`
                   }
                 }
-              },
-            },
-            {
-              name: 'totalFormatedTimelogsDuration', label: this.$tr('itask.cms.timeLogs.title'), field: 'totalFormatedTimelogsDuration', align: 'left',
-              format: ({val}) => val ? val : '-',
-              onClick: ({row})  => {
-                this.openTimeLogsModal(row)
               }
-            },            
-            {
-              name: 'actions', label: this.$tr('isite.cms.form.actions'), 
-              align: 'center',          
             },
+            {
+              name: 'totalFormatedTimelogsDuration',
+              label: this.$tr('itask.cms.timeLogs.title'),
+              field: 'totalFormatedTimelogsDuration',
+              align: 'left',
+              format: ({ val }) => val ? val : '-',
+              onClick: ({ row }) => {
+                this.openTimeLogsModal(row);
+              }
+            },
+            {
+              name: 'actions', label: this.$tr('isite.cms.form.actions'),
+              align: 'center'
+            }
           ],
           requestParams: {
             include: 'category,status,priority,timelogs.creator,assignedTo',
             filter: {
               rangeDate: {
-                from: moment().startOf('week').format(dateFormat),  
+                from: moment().startOf('week').format(dateFormat),
                 to: moment().endOf('week').format(dateFormat)
               }
             }
@@ -376,16 +378,16 @@ export default {
               props: {
                 label: this.$tr('itask.cms.form.assigned'),
                 useInput: true,
-                clearable: true,                
+                clearable: true,
                 rules: [
                   val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-                ],
+                ]
               },
               loadOptions: {
-                apiRoute: 'apiRoutes.quser.users',              
+                apiRoute: 'apiRoutes.quser.users',
                 select: {
                   label: 'email',
-                  id: item => `${item.id}`                
+                  id: item => `${item.id}`
                 }
               }
             },
@@ -393,12 +395,12 @@ export default {
               value: [],
               type: 'select',
               props: {
-                label: this.$tr('itask.cms.form.priority'),             
+                label: this.$tr('itask.cms.form.priority'),
                 useInput: true,
                 clearable: true,
                 rules: [
                   val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-                ],
+                ]
               },
               loadOptions: {
                 apiRoute: 'apiRoutes.qtask.priorities',
@@ -417,7 +419,7 @@ export default {
                 clearable: true,
                 rules: [
                   val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-                ],
+                ]
               },
               loadOptions: {
                 apiRoute: 'apiRoutes.qtask.categories',
@@ -431,12 +433,12 @@ export default {
               value: [],
               type: 'select',
               props: {
-                label: this.$tr('isite.cms.form.status'),             
+                label: this.$tr('isite.cms.form.status'),
                 useInput: true,
                 clearable: true,
                 rules: [
                   val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-                ],
+                ]
               },
               loadOptions: {
                 apiRoute: 'apiRoutes.qtask.statuses',
@@ -445,31 +447,31 @@ export default {
                   id: item => `${item.id}`
                 }
               }
-            },            
+            }
           },
-          
+
           help: {
             title: this.$tr('itask.cms.taskManagement'),
             description: this.$tr('itask.cms.taskManagement')
-          },
-          
+          }
+
         },
         update: {
           title: this.$tr('itask.cms.taskManagement')
         },
         //runs before update the row
-        beforeUpdate: ({val, row}) => {
+        beforeUpdate: ({ val, row }) => {
           return new Promise((resolve, reject) => {
             //check startDate should be minor than dateFormat
-            if(row.description == '') reject(row)
-            
-            if(moment(row.startDate).format(dateFormat) > moment(row.endDate).format(dateFormat)){
-              this.$alert.error({message: this.$tr('itask.cms.date.error')})
-              reject(row)
+            if (row.description == '') reject(row);
+
+            if (moment(row.startDate).format(dateFormat) > moment(row.endDate).format(dateFormat)) {
+              this.$alert.error({ message: this.$tr('itask.cms.date.error') });
+              reject(row);
             } else {
-              resolve(row)
+              resolve(row);
             }
-          })
+          });
         },
         actions: [
           //onClick: ({row}) => this.openShowModal(row)
@@ -478,7 +480,7 @@ export default {
             name: 'addTimelog',
             label: this.$tr('itask.cms.timeLogs.title'),
             action: (item) => {
-              this.openTimeLogsModal(item)
+              this.openTimeLogsModal(item);
             }
           },
           {//show action
@@ -486,7 +488,7 @@ export default {
             name: 'edit',
             label: this.$tr('isite.cms.label.show'),
             action: (item) => {
-              this.openShowModal(item)
+              this.openShowModal(item);
             }
           },
           {//Edit action
@@ -494,7 +496,7 @@ export default {
             name: 'edit',
             label: this.$tr('isite.cms.label.edit'),
             action: (item) => {
-              this.onUpdate(item)
+              this.onUpdate(item);
             }
           },
           {//Delete action
@@ -502,81 +504,82 @@ export default {
             name: 'delete',
             label: this.$tr('isite.cms.label.delete'),
             action: (item) => {
-              this.onDelete(item)
+              this.onDelete(item);
             }
-          },          
-        ]      
+          }
+        ]
       }
-    }
+    };
   },
   computed: {
-    dynamicListTitle(){
-      const from = moment(this.date.from).format('MMM Do')
-      const to = moment(this.date.to).format('MMM Do')
-      return `${this.$tr('itask.cms.week')}:  ${from} - ${to}`
-    }, 
-    
+    dynamicListTitle() {
+      const from = moment(this.date.from).format('MMM Do');
+      const to = moment(this.date.to).format('MMM Do');
+      return `${this.$tr('itask.cms.week')}:  ${from} - ${to}`;
+    }
+
   },
   methods: {
-    init(){},
-    setDate(from, to){    
-      this.date = {from, to}
+    init() {
+    },
+    setDate(from, to) {
+      this.date = { from, to };
       this.dateRangeFilter.value = {
         type: 'customRange',
         from,
         to
-      } 
-      this.listData.read.requestParams.filter['rangeDate'] = this.date
-      this.$refs.dynamicList.updateFilter('rangeDate', this.date)      
-      this.refreshDynamicList()
+      };
+      this.listData.read.requestParams.filter['rangeDate'] = this.date;
+      this.$refs.dynamicList.updateFilter('rangeDate', this.date);
+      this.refreshDynamicList();
     },
-    refreshDynamicList(){
-      if(this.selectedRow.showModal || this.selectedRow.timeLogsModal ){
-        this.selectedRow.timeLogsModal = false 
-        this.selectedRow.showModal = false
-        this.selectedRow.row = null
+    refreshDynamicList() {
+      if (this.selectedRow.showModal || this.selectedRow.timeLogsModal) {
+        this.selectedRow.timeLogsModal = false;
+        this.selectedRow.showModal = false;
+        this.selectedRow.row = null;
       }
-      this.$refs.dynamicList.getData({pagination: {page: 0}}, true)
+      this.$refs.dynamicList.getData({ pagination: { page: 0 } }, true);
     },
-    goToPrevious(){      
+    goToPrevious() {
       //next week
-      const from = moment(this.date.from).subtract(1, 'weeks').startOf('week').format(dateFormat)
-      const to = moment(this.date.from).subtract(1, 'weeks').endOf('week').format(dateFormat)
-      this.setDate(from, to)      
+      const from = moment(this.date.from).subtract(1, 'weeks').startOf('week').format(dateFormat);
+      const to = moment(this.date.from).subtract(1, 'weeks').endOf('week').format(dateFormat);
+      this.setDate(from, to);
     },
-    goToNext(){
+    goToNext() {
       //next week
-      const from = moment(this.date.from).add(1, 'weeks').startOf('week').format(dateFormat)
-      const to = moment(this.date.to).add(1, 'weeks').endOf('week').format(dateFormat)
-      this.setDate(from, to)      
+      const from = moment(this.date.from).add(1, 'weeks').startOf('week').format(dateFormat);
+      const to = moment(this.date.to).add(1, 'weeks').endOf('week').format(dateFormat);
+      this.setDate(from, to);
     },
-    setDateRange(value){
-      if(value != null && value?.from && value?.to){
-        const from = moment(value.from).format(dateFormat)
-        const to = moment(value.to).format(dateFormat)
-        if(from != this.date.from || to != this.date.to ) this.setDate(from, to)
+    setDateRange(value) {
+      if (value != null && value?.from && value?.to) {
+        const from = moment(value.from).format(dateFormat);
+        const to = moment(value.to).format(dateFormat);
+        if (from != this.date.from || to != this.date.to) this.setDate(from, to);
       }
-    }, 
-    openTimeLogsModal(row){
-      this.selectedRow.row = row
-      this.selectedRow.timeLogsModal = true
-    }, 
-    async reloadRow(row){
-      const newRow = await this.$refs.dynamicList.reloadRow(row)
-      this.selectedRow.row = newRow      
-    }, 
-    openShowModal(row){
-      this.selectedRow.row = row
-      this.selectedRow.showModal = true
-    }, 
-    onUpdate(row){
-      this.$refs.crudComponent.update(row)
-    }, 
-    onDelete(row){
-      this.$refs.crudComponent.delete(row)
+    },
+    openTimeLogsModal(row) {
+      this.selectedRow.row = row;
+      this.selectedRow.timeLogsModal = true;
+    },
+    async reloadRow(row) {
+      const newRow = await this.$refs.dynamicList.reloadRow(row);
+      this.selectedRow.row = newRow;
+    },
+    openShowModal(row) {
+      this.selectedRow.row = row;
+      this.selectedRow.showModal = true;
+    },
+    onUpdate(row) {
+      this.$refs.crudComponent.update(row);
+    },
+    onDelete(row) {
+      this.$refs.crudComponent.delete(row);
     }
   }
-}
+};
 </script>
 <style lang="scss">
 .padding-none {
