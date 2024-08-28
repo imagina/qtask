@@ -12,7 +12,7 @@ export default {
       return {
         crudId: this.crudId,
         apiRoute: 'apiRoutes.qtask.tasks',
-        permission: 'itask.categories',
+        permission: 'itask.tasks',
         create: {
           title: this.$tr('itask.cms.newTask'),
         },
