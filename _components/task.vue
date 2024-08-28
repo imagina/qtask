@@ -18,44 +18,46 @@
         <span class="text-subtitle2 text-weight-bold">
           Details:
         </span>
-        <div class="row">
-          <div class="col-3">          
-            {{ this.$tr('itask.cms.form.priority') }} :
+        <div class="q-my-xs">
+          <div class="row">
+            <div class="col-3">          
+              {{ this.$tr('itask.cms.form.priority') }} :
+            </div>
+            <div class="col-9">
+              {{ row.priority.title }}       
+            </div>
           </div>
-          <div class="col-9">
-            {{ row.priority.title }}       
+          <div class="row">
+            <div class="col-3">          
+              {{ this.$tr('itask.cms.form.assigned') }}: 
+            </div>
+            <div class="col-9">
+              {{ assignedTo}}
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-3">          
-            {{ this.$tr('itask.cms.form.assigned') }}: 
+          <div class="row">
+            <div class="col-3">          
+              {{ $tr('itask.cms.duration') }}: 
+            </div>
+            <div class="col-9">
+              {{ row.duration }}
+            </div>
           </div>
-          <div class="col-9">
-            {{ assignedTo}}
+          <div class="row">
+            <div class="col-3">          
+              {{ $tr('isite.cms.form.startDate') }}: 
+            </div>
+            <div class="col-9">
+              {{ row.startDate }}       
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-3">          
-            {{ $tr('itask.cms.duration') }}: 
-          </div>
-          <div class="col-9">
-            {{ row.duration }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-3">          
-            {{ $tr('isite.cms.form.startDate') }}: 
-          </div>
-          <div class="col-9">
-            {{ row.startDate }}       
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-3">          
-            {{ $tr('isite.cms.form.endDate') }}: 
-          </div>
-          <div class="col-9">
-            {{ row.endDate }}       
+          <div class="row">
+            <div class="col-3">          
+              {{ $tr('isite.cms.form.endDate') }}: 
+            </div>
+            <div class="col-9">
+              {{ row.endDate }}       
+            </div>
           </div>
         </div>
       </div>
