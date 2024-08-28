@@ -80,11 +80,14 @@
     <master-modal
       v-model="selectedRow.showModal"      
       :title="`Task : ${selectedRow.row?.id}`"
-      width="460px"
-      @hide="selectedRow.showModal = false"      
+      custom-position
+      @hide="selectedRow.showModal = false"
     > 
       <taskComponent 
        :row="selectedRow.row"
+       @onClose="selectedRow.showModal = false"
+       @onUpdate="(row) => onUpdate(row)"
+       @onDelete="(row) => onDelete(row)"
        @openTimeLogsModal="(row) => openTimeLogsModal(row)"
       />
     </master-modal>
@@ -491,7 +494,7 @@ export default {
             name: 'edit',
             label: this.$tr('isite.cms.label.edit'),
             action: (item) => {
-              this.$refs.crudComponent.update(item)
+              this.onUpdate(item)
             }
           },
           {//Delete action
@@ -499,7 +502,7 @@ export default {
             name: 'delete',
             label: this.$tr('isite.cms.label.delete'),
             action: (item) => {
-              this.$refs.crudComponent.delete(item)
+              this.onDelete(item)
             }
           },          
         ]      
@@ -528,6 +531,11 @@ export default {
       this.refreshDynamicList()
     },
     refreshDynamicList(){
+      if(this.selectedRow.showModal || this.selectedRow.timeLogsModal ){
+        this.selectedRow.timeLogsModal = false 
+        this.selectedRow.showModal = false
+        this.selectedRow.row = null
+      }
       this.$refs.dynamicList.getData({pagination: {page: 0}}, true)
     },
     goToPrevious(){      
@@ -560,6 +568,12 @@ export default {
     openShowModal(row){
       this.selectedRow.row = row
       this.selectedRow.showModal = true
+    }, 
+    onUpdate(row){
+      this.$refs.crudComponent.update(row)
+    }, 
+    onDelete(row){
+      this.$refs.crudComponent.delete(row)
     }
   }
 }
