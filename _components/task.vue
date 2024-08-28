@@ -1,35 +1,31 @@
 <template>  
   <div class="row  q-col-gutter-x-md">    
-    <div class="col-8">
-      <q-scroll-area style="height: 600px;" visible class="q-pa-md">
+    <div class="col-12 col-md-8">
+      <!-- master-modal height-->
+      <q-scroll-area style="height: calc(100vh - 173px);" visible class="q-pa-md">
         <!-- title -->
         <div>
           <span class="text-h6">{{ row.title }}</span>
         </div>  
-      <!-- desc -->
+        <!-- description -->
         <div class="q-my-md">
           <span class="text-subtitle2 text-weight-bold">
-            {{ this.$tr('isite.cms.form.description') }}:
+            {{ $tr('isite.cms.form.description') }}:
           </span>
           <div class="q-my-xs" v-html="row.description">
           </div>
         </div>
-      </q-scroll-area>
-
-      
-      
-
-      <!-- show timelogs-->      
+      </q-scroll-area>      
     </div>
-    <div class="col-4">
+    <div class="col-12 col-md-4">
       <div class="q-mb-md task-details q-pa-sm">
         <span class="text-subtitle2 text-weight-bold">
-          Details:
+          {{ $tr('isite.cms.details') }}
         </span>
         <div class="q-my-xs q-col-gutter-y-sm">
           <div class="row">
             <div class="col-5">          
-              {{ this.$tr('isite.cms.form.category') }} :
+              {{ $tr('isite.cms.form.category') }} :
             </div>
             <div class="col-7">
               {{ row.category.title }}       
@@ -37,7 +33,7 @@
           </div>
           <div class="row">
             <div class="col-5">          
-              {{ this.$tr('isite.cms.form.status') }} :
+              {{ $tr('isite.cms.form.status') }} :
             </div>
             <div class="col-7">
               {{ row.status.title }}       
@@ -45,7 +41,7 @@
           </div>
           <div class="row">
             <div class="col-5">          
-              {{ this.$tr('itask.cms.form.priority') }} :
+              {{ $tr('itask.cms.form.priority') }} :
             </div>
             <div class="col-7">
               {{ row.priority.title }}       
@@ -53,23 +49,20 @@
           </div>
           <div class="row">
             <div class="col-5">          
-              {{ this.$tr('itask.cms.form.assigned') }}: 
+              {{ $tr('itask.cms.form.assigned') }}: 
             </div>
             <div class="col-7">
               {{ assignedTo}}
             </div>
-          </div>
-          
+          </div>          
           <div class="row">
             <div class="col-5">          
-              {{ this.$tr('itask.cms.form.estimatedTime') }}: 
+              {{ $tr('itask.cms.form.estimatedTime') }}: 
             </div>
             <div class="col-7">
               {{ row.formatedEstimatedTime}}
             </div>
           </div>
-
-
           <div class="row">
             <div class="col-5">          
               {{ $tr('itask.cms.duration') }}: 
@@ -95,8 +88,8 @@
             </div>
           </div>
         </div>
-      
-        <div class="q-mt-md">
+        <!-- show timelogs-->
+        <div class="q-my-md">
           <div>
             <span class="text-subtitle2 text-weight-bold">
               {{ $tr('itask.cms.timeLogs.title') }}:
@@ -112,9 +105,7 @@
             />    
           </div>      
         </div>
-      </div>
-      <div class="row">
-        <div class="col-12 items-center">          
+        <div class="flex justify-end items-center">
           <q-btn
             :label="$tr('isite.cms.label.edit')" 
             @click=" () => {
@@ -123,8 +114,7 @@
             }"
             no-caps
             unelevated
-          />
-        
+          />        
           <q-btn 
             :label="$tr('isite.cms.label.delete')" 
             @click="$emit('onDelete', row)"
@@ -132,11 +122,9 @@
             unelevated
             class="q-ml-sm"
           />
-        
       </div>
-      </div>
-    </div>
-  
+      </div>      
+    </div>  
   </div>
 </template>
   <script lang="ts">
@@ -145,7 +133,6 @@
   export default defineComponent({
     props: {
       row: {default: {}}
-
     },    
     computed: {
       assignedTo(){        

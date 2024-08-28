@@ -1,20 +1,5 @@
 
 export default {
-  tasks: {
-    permission: 'itask.tasks.manage',
-    activated: true,
-    authenticated: true,
-    path: '/task/tasks/index',
-    name: 'qtask.admin.tasks',
-    crud : import('modules/qtask/_crud/tasks'),
-    page: () => import('modules/qcrud/_pages/admin/crudPage'),
-    layout: () => import('layouts/master.vue'),
-    title: 'itask.cms.sidebar.adminTasks',
-    icon: 'fa-light fa-clipboard-check',
-    subHeader: {
-        refresh: true,
-    }
-  },
   priorities: {
     permission: 'itask.priorities.manage',
     activated: true,
@@ -69,7 +54,7 @@ export default {
     //crud : import('modules/qtask/_crud/tasks'),
     page: () => import('modules/qtask/_pages/tasksList'),
     layout: () => import('layouts/master.vue'),
-    title: 'Task management',
+    title: 'itask.cms.sidebar.adminTasks',
     icon: 'fa-light fa-clipboard-check',
     subHeader: {
         refresh: true,
