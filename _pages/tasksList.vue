@@ -45,13 +45,7 @@
                 </q-tooltip>
               </q-btn>
             </div>
-            <div class="tw-w-full row">
-              <dynamic-field
-                v-model="dateRangeFilter.value"
-                @update:model-value="(value) => setDateRange(value)"
-                :field="dateRangeFilter"
-                style="width: 246px;"
-              />
+            <div class="tw-w-full row justify-center cursor-pointer" @click="dateRangeFilterModal = true">              
               <div class="text-primary q-pa-md" style="font-size: 16px">
                 <div>{{ dynamicListTitle }}</div>
               </div>
@@ -76,6 +70,22 @@
       </dynamicList>
     </div>
 
+    <master-modal
+      v-model="dateRangeFilterModal"
+      title="select Range"
+      width="460px"
+      @hide="dateRangeFilterModal = false"
+    >
+      <dynamic-field
+        v-model="dateRangeFilter.value"
+        @update:model-value="(value) => { 
+          dateRangeFilterModal = false
+          setDateRange(value)
+        }"
+        :field="dateRangeFilter"
+      />
+    </master-modal>
+    
     <!--- show task modal --->
     <master-modal
       v-model="selectedRow.showModal"
@@ -167,6 +177,7 @@ export default {
         from: moment().startOf('week').format(dateFormat),
         to: moment().endOf('week').format(dateFormat)
       },
+      dateRangeFilterModal: false,
       dateRangeFilter: {
         value: {
           type: 'customRange',
