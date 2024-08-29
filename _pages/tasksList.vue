@@ -45,9 +45,27 @@
                 </q-tooltip>
               </q-btn>
             </div>
-            <div class="tw-w-full row justify-center cursor-pointer" @click="dateRangeFilterModal = true">              
-              <div class="text-primary q-pa-md" style="font-size: 16px">
-                <div>{{ dynamicListTitle }}</div>
+            <div class="tw-w-full row justify-center">
+              <div class="text-primary q-pa-md " style="font-size: 16px">
+                <div class="cursor-pointer">
+                  {{ dynamicListTitle }}
+                </div>
+                <q-popup-edit
+                  ref="titleModal"
+                  v-model="dateRangeFilter.value"
+                  transition-show="fade-in"
+                  transition-hide="fade-out"
+                  :cover="false"
+                  anchor="bottom start"
+                >
+                  <div style="width: 240px; height:90px;">
+                    <dynamic-field
+                      v-model="dateRangeFilter.value"
+                      @update:model-value="(value) => setDateRange(value)"
+                      :field="dateRangeFilter"
+                    />
+                  </div>
+                </q-popup-edit>
               </div>
             </div>
             <div>
@@ -70,22 +88,6 @@
       </dynamicList>
     </div>
 
-    <master-modal
-      v-model="dateRangeFilterModal"
-      title="select Range"
-      width="460px"
-      @hide="dateRangeFilterModal = false"
-    >
-      <dynamic-field
-        v-model="dateRangeFilter.value"
-        @update:model-value="(value) => { 
-          dateRangeFilterModal = false
-          setDateRange(value)
-        }"
-        :field="dateRangeFilter"
-      />
-    </master-modal>
-    
     <!--- show task modal --->
     <master-modal
       v-model="selectedRow.showModal"
@@ -175,9 +177,9 @@ export default {
       tabModel: 'table',
       date: {
         from: moment().startOf('week').format(dateFormat),
-        to: moment().endOf('week').format(dateFormat)
+        to: moment().endOf('week').format(dateFormat), 
+        title: this.$tr('itask.cms.week')
       },
-      dateRangeFilterModal: false,
       dateRangeFilter: {
         value: {
           type: 'customRange',
@@ -526,15 +528,15 @@ export default {
     dynamicListTitle() {
       const from = moment(this.date.from).format('MMM Do');
       const to = moment(this.date.to).format('MMM Do');
-      return `${this.$tr('itask.cms.week')}:  ${from} - ${to}`;
+      return `${this.date.title}:  ${from} - ${to}`;
     }
 
   },
   methods: {
     init() {
     },
-    setDate(from, to) {
-      this.date = { from, to };
+    setDate(from, to, title) {
+      this.date = { from, to, title };
       this.dateRangeFilter.value = {
         type: 'customRange',
         from,
@@ -556,19 +558,24 @@ export default {
       //next week
       const from = moment(this.date.from).subtract(1, 'weeks').startOf('week').format(dateFormat);
       const to = moment(this.date.from).subtract(1, 'weeks').endOf('week').format(dateFormat);
-      this.setDate(from, to);
+      const title = this.$tr('itask.cms.week')
+      this.setDate(from, to, title);
     },
     goToNext() {
       //next week
       const from = moment(this.date.from).add(1, 'weeks').startOf('week').format(dateFormat);
       const to = moment(this.date.to).add(1, 'weeks').endOf('week').format(dateFormat);
-      this.setDate(from, to);
+      const title = this.$tr('itask.cms.week')
+      this.setDate(from, to, title);
     },
     setDateRange(value) {
       if (value != null && value?.from && value?.to) {
         const from = moment(value.from).format(dateFormat);
         const to = moment(value.to).format(dateFormat);
-        if (from != this.date.from || to != this.date.to) this.setDate(from, to);
+        if (from != this.date.from || to != this.date.to) {
+          this.setDate(from, to, value.label);
+          this.$refs.titleModal.hide()
+        }
       }
     },
     openTimeLogsModal(row) {
