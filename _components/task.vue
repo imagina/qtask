@@ -4,17 +4,23 @@
       <!-- master-modal height-->
       <q-scroll-area style="height: calc(100vh - 173px);" visible class="q-pa-md">
         <!-- title -->
-        <div>
-          <span class="text-h6">{{ row.title }}</span>
-        </div>  
-        <!-- description -->
-        <div class="q-my-md">
-          <span class="text-subtitle2 text-weight-bold">
-            {{ $tr('isite.cms.form.description') }}:
-          </span>
-          <div class="q-my-xs" v-html="row.description">
+         <div>
+          <div>
+            <span class="text-h6">{{ row.title }}</span>
+          </div>  
+          <!-- description -->
+          <div class="q-my-md">
+            <span class="text-subtitle2 text-weight-bold">
+              {{ $tr('isite.cms.form.description') }}:
+            </span>
+            <div class="q-my-xs" v-html="row.description">
+            </div>
           </div>
         </div>
+        <comments-component 
+          :commentableId="Number(row.id)"
+          commentableType="Modules\Itask\Entities\Task"
+        />
       </q-scroll-area>      
     </div>
     <div class="col-12 col-md-4">
@@ -129,11 +135,15 @@
 </template>
   <script lang="ts">
   import {defineComponent} from 'vue'
+  import commentsComponent from 'modules/qcomment/_components/comments'
   
   export default defineComponent({
     props: {
       row: {default: {}}
-    },    
+    },
+    components: {
+      commentsComponent
+    },
     computed: {
       assignedTo(){        
         return (this.row.assignedTo && (this.row.assignedTo?.firstName || this.row.assignedTo?.lastName)  ?  `${this.row.assignedTo.firstName} ${this.row.assignedTo.lastName}` : '-')
