@@ -4,7 +4,7 @@
       <!-- master-modal height-->
       <q-scroll-area style="height: calc(100vh - 173px);" visible class="q-pa-md">
         <!-- title -->
-         <div>
+         <div style="min-height: 240px; height: 100%;">
           <div>
             <span class="text-h6">{{ row.title }}</span>
           </div>  
@@ -17,6 +17,7 @@
             </div>
           </div>
         </div>
+        <q-separator />
         <comments-component 
           :commentableId="Number(row.id)"
           commentableType="Modules\Itask\Entities\Task"
@@ -106,6 +107,7 @@
               text-color="primary"
               unelevated
               no-caps
+              rounded
               :label="`${row.totalFormatedTimelogsDuration}`"
               @click="$emit('openTimeLogsModal', row)"
             />    
@@ -118,6 +120,7 @@
               $emit('onUpdate', row)
               $emit('close')
             }"
+            rounded
             no-caps
             unelevated
           />        
