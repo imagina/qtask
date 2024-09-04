@@ -4,7 +4,7 @@
       <!-- master-modal height-->
       <q-scroll-area style="height: calc(100vh - 173px);" visible class="q-pa-md">
         <!-- title -->
-         <div style="min-height: 240px; height: 100%;">
+        <div style="min-height: 230px; height: 100%;">
           <div>
             <span class="text-h6">{{ row.title }}</span>
           </div>  
@@ -17,11 +17,16 @@
             </div>
           </div>
         </div>
-        <q-separator />
-        <comments-component 
-          :commentableId="Number(row.id)"
-          commentableType="Modules\Itask\Entities\Task"
-        />
+        <div class="flex justify-start text-caption">
+          <span>{{ $trd(row.updatedAt, {type: 'long'})  }}</span>
+        </div>
+        <div class="q-mt-md">
+          <comments-component
+            :commentableId="Number(row.id)"
+            :field="{type: 'html'}"
+            commentableType="Modules\Itask\Entities\Task"
+          />
+        </div>        
       </q-scroll-area>      
     </div>
     <div class="col-12 col-md-4">
