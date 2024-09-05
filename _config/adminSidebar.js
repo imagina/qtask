@@ -7,8 +7,8 @@ export default [
       icon: 'fa-light fa-list-check',
       children: [
         pages.qtask.tasksList,
-        pages.qtask.priorities,
         pages.qtask.categories,
+        pages.qtask.priorities,
         pages.qtask.statuses
       ]
     },
