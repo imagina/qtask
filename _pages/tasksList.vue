@@ -177,7 +177,7 @@ export default {
       tabModel: 'table',
       date: {
         from: moment().startOf('week').format(dateFormat),
-        to: moment().endOf('week').format(dateFormat), 
+        to: moment().endOf('week').format(dateFormat),
         title: this.$tr('itask.cms.week')
       },
       dateRangeFilter: {
@@ -216,6 +216,30 @@ export default {
               name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title',
               align: 'rigth', style: 'max-width: 250px',
               onClick: ({ row }) => this.openShowModal(row)
+            },
+            {
+              name: 'category', label: this.$tr('isite.cms.form.category'),
+              align: 'left', field: 'category', style: 'max-width : 250px',
+              format: ({ val }) => val && val?.title ? val.title : '-',
+              dynamicField: {
+                value: [],
+                type: 'select',
+                name: 'categoryId',
+                props: {
+                  label: this.$tr('isite.cms.form.category'),
+                  useInput: true,
+                  rules: [
+                    val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+                  ]
+                },
+                loadOptions: {
+                  apiRoute: 'apiRoutes.qtask.categories',
+                  select: {
+                    label: 'title',
+                    id: item => `${item.id}`
+                  }
+                }
+              }
             },
             {
               name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
@@ -333,30 +357,6 @@ export default {
                 props: {
                   label: this.$tr('itask.cms.form.estimatedTime'),
                   unit: 'minutes'
-                }
-              }
-            },
-            {
-              name: 'category', label: this.$tr('isite.cms.form.category'),
-              align: 'left', field: 'category',
-              format: ({ val }) => val && val?.title ? val.title : '-',
-              dynamicField: {
-                value: [],
-                type: 'select',
-                name: 'categoryId',
-                props: {
-                  label: this.$tr('isite.cms.form.category'),
-                  useInput: true,
-                  rules: [
-                    val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-                  ]
-                },
-                loadOptions: {
-                  apiRoute: 'apiRoutes.qtask.categories',
-                  select: {
-                    label: 'title',
-                    id: item => `${item.id}`
-                  }
                 }
               }
             },
