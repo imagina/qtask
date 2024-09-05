@@ -3,7 +3,7 @@
     <!--Content-->
     <!-- tabs -->
     <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-6 q-mb-sm">
+      <div class="col-xs-12 col-sm-12 col-md-6 q-mb-sm" v-show="false">
         <q-tabs
           v-model="tabModel"
           dense
@@ -29,60 +29,54 @@
       >
         <!-- date range and week navigation -->
         <template #top-table>
-          <div class="tw-w-full tw-flex q-my-md items-center">
-            <div>
-              <q-btn
-                text-color="primary"
-                class="q-mr-sm"
-                size="sm"
-                unelevated
-                round
-                icon="fa-regular fa-chevron-left"
-                @click="goToPrevious()"
-              >
-                <q-tooltip anchor="bottom middle" self="top middle">
-                  {{ $tr('itask.cms.previousWeek') }}
-                </q-tooltip>
-              </q-btn>
-            </div>
-            <div class="tw-w-full row justify-center">
-              <div class="text-primary q-pa-md " style="font-size: 16px">
-                <div class="cursor-pointer">
+          <div class="tw-w-full row q-my-md items-center justify-end">
+            <q-btn
+              text-color="primary" style="border: 1px solid rgba(0, 13, 71, 0.15)"
+              class="q-mr-sm btn-small" icon="fa-regular fa-chevron-left"
+              dense rounded unelevated @click="goToPrevious()" padding="8px"
+            >
+              <q-tooltip anchor="bottom middle" self="top middle">
+                {{ $tr('itask.cms.previousWeek') }}
+              </q-tooltip>
+            </q-btn>
+            <div class="row justify-center q-mx-sm">
+              <div class="cursor-pointer row items-center">
+                <q-icon name="fal fa-calendar-range" color="amber"
+                        class="q-mr-sm" size="23px" />
+                <div class="text-blue-grey" style="line-height: 1">
+                  <div class="text-caption" style="line-height: 1">
+                    {{ $tr('isite.cms.label.date') }}
+                  </div>
                   {{ dynamicListTitle }}
                 </div>
-                <q-popup-edit
-                  ref="titleModal"
-                  v-model="dateRangeFilter.value"
-                  transition-show="fade-in"
-                  transition-hide="fade-out"
-                  :cover="false"
-                  anchor="bottom start"
-                >
-                  <div style="width: 240px; height:90px;">
-                    <dynamic-field
-                      v-model="dateRangeFilter.value"
-                      @update:model-value="(value) => setDateRange(value)"
-                      :field="dateRangeFilter"
-                    />
-                  </div>
-                </q-popup-edit>
               </div>
-            </div>
-            <div>
-              <q-btn
-                text-color="primary"
-                class="q-mr-sm"
-                size="sm"
-                unelevated
-                round
-                icon="fa-regular fa-chevron-right"
-                @click="goToNext()"
+              <q-tooltip>{{$tr('isite.cms.label.edit')}}</q-tooltip>
+              <q-popup-edit
+                ref="titleModal"
+                v-model="dateRangeFilter.value"
+                transition-show="fade-in"
+                transition-hide="fade-out"
+                :cover="false"
+                anchor="bottom start"
               >
-                <q-tooltip anchor="bottom middle" self="top middle">
-                  {{ $tr('itask.cms.nextWeek') }}
-                </q-tooltip>
-              </q-btn>
+                <div style="width: 240px;">
+                  <dynamic-field
+                    v-model="dateRangeFilter.value"
+                    @update:model-value="(value) => setDateRange(value)"
+                    :field="dateRangeFilter"
+                  />
+                </div>
+              </q-popup-edit>
             </div>
+            <q-btn
+              text-color="primary" style="border: 1px solid rgba(0, 13, 71, 0.15)"
+              class="q-ml-sm btn-small" icon="fa-regular fa-chevron-right"
+              dense rounded unelevated @click="goToPrevious()" padding="8px"
+            >
+              <q-tooltip anchor="bottom middle" self="top middle">
+                {{ $tr('itask.cms.nextWeek') }}
+              </q-tooltip>
+            </q-btn>
           </div>
         </template>
       </dynamicList>
@@ -401,6 +395,27 @@ export default {
                 select: {
                   label: 'email',
                   id: item => `${item.id}`
+                },
+                filterByQuery: true
+              }
+            },
+            categoryId: {
+              value: [],
+              type: 'select',
+              props: {
+                label: this.$tr('isite.cms.form.category'),
+                useInput: true,
+                clearable: true,
+                rules: [
+                  val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
+                ]
+              },
+              loadOptions: {
+                apiRoute: 'apiRoutes.qtask.categories',
+                filterByQuery: true,
+                select: {
+                  label: 'title',
+                  id: item => `${item.id}`
                 }
               }
             },
@@ -417,25 +432,6 @@ export default {
               },
               loadOptions: {
                 apiRoute: 'apiRoutes.qtask.priorities',
-                select: {
-                  label: 'title',
-                  id: item => `${item.id}`
-                }
-              }
-            },
-            categoryId: {
-              value: [],
-              type: 'select',
-              props: {
-                label: this.$tr('isite.cms.form.category'),
-                useInput: true,
-                clearable: true,
-                rules: [
-                  val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
-                ]
-              },
-              loadOptions: {
-                apiRoute: 'apiRoutes.qtask.categories',
                 select: {
                   label: 'title',
                   id: item => `${item.id}`
@@ -558,14 +554,14 @@ export default {
       //next week
       const from = moment(this.date.from).subtract(1, 'weeks').startOf('week').format(dateFormat);
       const to = moment(this.date.from).subtract(1, 'weeks').endOf('week').format(dateFormat);
-      const title = this.$tr('itask.cms.week')
+      const title = this.$tr('itask.cms.week');
       this.setDate(from, to, title);
     },
     goToNext() {
       //next week
       const from = moment(this.date.from).add(1, 'weeks').startOf('week').format(dateFormat);
       const to = moment(this.date.to).add(1, 'weeks').endOf('week').format(dateFormat);
-      const title = this.$tr('itask.cms.week')
+      const title = this.$tr('itask.cms.week');
       this.setDate(from, to, title);
     },
     setDateRange(value) {
@@ -574,7 +570,7 @@ export default {
         const to = moment(value.to).format(dateFormat);
         if (from != this.date.from || to != this.date.to) {
           this.setDate(from, to, value.label);
-          this.$refs.titleModal.hide()
+          this.$refs.titleModal.hide();
         }
       }
     },
