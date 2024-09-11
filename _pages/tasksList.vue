@@ -204,12 +204,12 @@ export default {
           columns: [
             {
               name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: '',
-              onClick: ({ row }) => this.openShowModal(row)
+              onClick: (val, row) => this.openShowModal(row)
             },
             {
               name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title',
               align: 'rigth', style: 'max-width: 250px',
-              onClick: ({ row }) => this.openShowModal(row)
+              onClick: (val, row) => this.openShowModal(row)
             },
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
@@ -361,7 +361,7 @@ export default {
               field: 'totalFormatedTimelogsDuration',
               align: 'left',
               format: (val) => val ? val : '-',
-              onClick: ({ row }) => {
+              onClick: (val, row) => {
                 this.openTimeLogsModal(row);
               }
             },
