@@ -24,7 +24,7 @@
       <dynamicList
         v-if="tabModel == tabs[0].value"
         ref="dynamicList"
-        :listData="listData"
+        :listConfig="listConfig"
         @new="() => $refs.crudComponent.create()"
       >
         <!-- date range and week navigation -->
@@ -189,13 +189,10 @@ export default {
         }
       },
       loading: false,
-      listData: {
+      listConfig: {
         apiRoute: 'apiRoutes.qtask.tasks',
         permission: 'itask.tasks',
         search: true,
-        create: {
-          title: this.$tr('itask.cms.newTask')
-        },
         read: {
           title: this.$tr('itask.cms.taskManagement'),
           tableProps: {
@@ -204,19 +201,19 @@ export default {
           columns: [
             {
               name: 'id', label: this.$tr('isite.cms.form.id'), field: 'id', style: '',
-              onClick: ({ row }) => this.openShowModal(row)
+              onClick: (val, row) => this.openShowModal(row)
             },
             {
               name: 'title', label: this.$tr('isite.cms.form.title'), field: 'title',
               align: 'rigth', style: 'max-width: 250px',
-              onClick: ({ row }) => this.openShowModal(row)
+              onClick: (val, row) => this.openShowModal(row)
             },
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
               align: 'left', field: 'category', style: 'max-width : 250px',
-              format: ({ val }) => val && val?.title ? val.title : '-',
+              format: (val) => val && val?.title ? val.title : '-',
               dynamicField: {
-                value: [],
+                value: null,
                 type: 'select',
                 name: 'categoryId',
                 props: {
@@ -237,7 +234,7 @@ export default {
             },
             {
               name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
-              format: ({ val }) => ((val && (val.firstName || val.lastName)) ? `${val.firstName} ${val.lastName}` : '-'),
+              format: (val) => ((val && (val.firstName || val.lastName)) ? `${val.firstName} ${val.lastName}` : '-'),
               dynamicField: {
                 value: [],
                 type: 'select',
@@ -285,7 +282,7 @@ export default {
             },
             {
               name: 'duration', label: this.$tr('itask.cms.duration'), field: 'duration', align: 'left',
-              format: ({ val }) => val ? val : '-'
+              format: (val) => val ? val : '-'
             },
             {
               name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'center',
@@ -343,7 +340,7 @@ export default {
               label: this.$tr('itask.cms.form.estimatedTime'),
               field: 'formatedEstimatedTime',
               align: 'left',
-              format: ({ row }) => row?.formatedEstimatedTime ? row.formatedEstimatedTime : '-',
+              format: (val, row) => row?.formatedEstimatedTime ? row.formatedEstimatedTime : '-',
               dynamicField: {
                 value: '',
                 name: 'estimatedTime',
@@ -359,8 +356,8 @@ export default {
               label: this.$tr('itask.cms.timeLogs.title'),
               field: 'totalFormatedTimelogsDuration',
               align: 'left',
-              format: ({ val }) => val ? val : '-',
-              onClick: ({ row }) => {
+              format: (val) => val ? val : '-',
+              onClick: (val, row) => {
                 this.openTimeLogsModal(row);
               }
             },
@@ -465,23 +462,21 @@ export default {
           }
 
         },
-        update: {
-          title: this.$tr('itask.cms.taskManagement')
-        },
+        
         //runs before update the row
         beforeUpdate: ({ val, row }) => {
           return new Promise((resolve, reject) => {
             //check startDate should be minor than dateFormat
-            if (row.description == '') reject(row);
-
+            if (row.description == '') reject();
             if (moment(row.startDate).format(dateFormat) > moment(row.endDate).format(dateFormat)) {
               this.$alert.error({ message: this.$tr('itask.cms.date.error') });
-              reject(row);
+              reject();
             } else {
-              resolve(row);
+              resolve(val);
             }
           });
         },
+        
         actions: [
           //onClick: ({row}) => this.openShowModal(row)
           {//Open timelogs
@@ -538,7 +533,7 @@ export default {
         from,
         to
       };
-      this.listData.read.requestParams.filter['rangeDate'] = this.date;
+      this.listConfig.read.requestParams.filter['rangeDate'] = this.date;
       this.$refs.dynamicList.updateFilter('rangeDate', this.date);
       this.refreshDynamicList();
     },
