@@ -214,7 +214,7 @@ export default {
             {
               name: 'category', label: this.$tr('isite.cms.form.category'),
               align: 'left', field: 'category', style: 'max-width : 250px',
-              format: ({ val }) => val && val?.title ? val.title : '-',
+              format: (val) => val && val?.title ? val.title : '-',
               dynamicField: {
                 value: [],
                 type: 'select',
@@ -237,7 +237,8 @@ export default {
             },
             {
               name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
-              format: ({ val }) => ((val && (val.firstName || val.lastName)) ? `${val.firstName} ${val.lastName}` : '-'),
+              //format: (val) => ((val && (val.firstName || val.lastName)) ? `${val.firstName} ${val.lastName}` : '-'),
+              format: (val) => ((val && (val.firstName || val.lastName)) ? `${val.firstName} ${val.lastName}` : '-'),
               dynamicField: {
                 value: [],
                 type: 'select',
@@ -285,7 +286,7 @@ export default {
             },
             {
               name: 'duration', label: this.$tr('itask.cms.duration'), field: 'duration', align: 'left',
-              format: ({ val }) => val ? val : '-'
+              format: (val) => val ? val : '-'
             },
             {
               name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'center',
@@ -343,7 +344,7 @@ export default {
               label: this.$tr('itask.cms.form.estimatedTime'),
               field: 'formatedEstimatedTime',
               align: 'left',
-              format: ({ row }) => row?.formatedEstimatedTime ? row.formatedEstimatedTime : '-',
+              format: (val, row) => row?.formatedEstimatedTime ? row.formatedEstimatedTime : '-',
               dynamicField: {
                 value: '',
                 name: 'estimatedTime',
@@ -359,7 +360,7 @@ export default {
               label: this.$tr('itask.cms.timeLogs.title'),
               field: 'totalFormatedTimelogsDuration',
               align: 'left',
-              format: ({ val }) => val ? val : '-',
+              format: (val) => val ? val : '-',
               onClick: ({ row }) => {
                 this.openTimeLogsModal(row);
               }
@@ -472,13 +473,12 @@ export default {
         beforeUpdate: ({ val, row }) => {
           return new Promise((resolve, reject) => {
             //check startDate should be minor than dateFormat
-            if (row.description == '') reject(row);
-
+            if (row.description == '') reject();
             if (moment(row.startDate).format(dateFormat) > moment(row.endDate).format(dateFormat)) {
               this.$alert.error({ message: this.$tr('itask.cms.date.error') });
-              reject(row);
+              reject();
             } else {
-              resolve(row);
+              resolve(val);
             }
           });
         },
