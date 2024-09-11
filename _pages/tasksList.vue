@@ -24,7 +24,7 @@
       <dynamicList
         v-if="tabModel == tabs[0].value"
         ref="dynamicList"
-        :listData="listData"
+        :listConfig="listConfig"
         @new="() => $refs.crudComponent.create()"
       >
         <!-- date range and week navigation -->
@@ -189,13 +189,10 @@ export default {
         }
       },
       loading: false,
-      listData: {
+      listConfig: {
         apiRoute: 'apiRoutes.qtask.tasks',
         permission: 'itask.tasks',
         search: true,
-        create: {
-          title: this.$tr('itask.cms.newTask')
-        },
         read: {
           title: this.$tr('itask.cms.taskManagement'),
           tableProps: {
@@ -216,7 +213,7 @@ export default {
               align: 'left', field: 'category', style: 'max-width : 250px',
               format: (val) => val && val?.title ? val.title : '-',
               dynamicField: {
-                value: [],
+                value: null,
                 type: 'select',
                 name: 'categoryId',
                 props: {
@@ -237,7 +234,6 @@ export default {
             },
             {
               name: 'assignedTo', label: this.$tr('itask.cms.form.assigned'), field: 'assignedTo', align: 'left',
-              //format: (val) => ((val && (val.firstName || val.lastName)) ? `${val.firstName} ${val.lastName}` : '-'),
               format: (val) => ((val && (val.firstName || val.lastName)) ? `${val.firstName} ${val.lastName}` : '-'),
               dynamicField: {
                 value: [],
@@ -466,9 +462,7 @@ export default {
           }
 
         },
-        update: {
-          title: this.$tr('itask.cms.taskManagement')
-        },
+        
         //runs before update the row
         beforeUpdate: ({ val, row }) => {
           return new Promise((resolve, reject) => {
@@ -482,6 +476,7 @@ export default {
             }
           });
         },
+        
         actions: [
           //onClick: ({row}) => this.openShowModal(row)
           {//Open timelogs
@@ -538,7 +533,7 @@ export default {
         from,
         to
       };
-      this.listData.read.requestParams.filter['rangeDate'] = this.date;
+      this.listConfig.read.requestParams.filter['rangeDate'] = this.date;
       this.$refs.dynamicList.updateFilter('rangeDate', this.date);
       this.refreshDynamicList();
     },
