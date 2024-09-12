@@ -543,7 +543,7 @@ export default {
         this.selectedRow.showModal = false;
         this.selectedRow.row = null;
       }
-      this.$refs.dynamicList.getData({ pagination: { page: 0 } }, true);
+      this.$refs.dynamicList.getData({ page: 1 }, true);
     },
     goToPrevious() {
       //next week
