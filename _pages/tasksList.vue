@@ -192,7 +192,9 @@ export default {
       listConfig: {
         apiRoute: 'apiRoutes.qtask.tasks',
         permission: 'itask.tasks',
-        search: true,
+        pageActions: {
+          extraActions: ['search', 'new']
+        },
         read: {
           title: this.$tr('itask.cms.taskManagement'),
           tableProps: {
