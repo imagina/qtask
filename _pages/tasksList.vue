@@ -291,7 +291,20 @@ export default {
               style: 'padding: 0 0 0 5px',
               //classes: 'padding-none',
               //headerClasess: 'padding-none',
-              component: statusComponent,
+              component: (row) => {
+                return {
+                  template: statusComponent,
+                  props: {
+                    vIf: row.statusId == 1,
+                    val:  row.statusId == 1 ? {title: 'title custom', color: '#000000' } : row.status
+                  },
+                  events: {
+                    change: (e) => {
+                      console.log(e)
+                    }
+                  } 
+                }
+              },
               dynamicField: {
                 type: 'select',
                 name: 'statusId',

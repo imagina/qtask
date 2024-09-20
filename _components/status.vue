@@ -4,12 +4,18 @@
       :style="{ 'background-color': background, 'color': color}"
       v-ripple
     >
+    {{ vIf }}
       <div class="flex justify-center items-center " style="width: 140px;  height: 36px; padding: 8px;">
         <div class="ellipsis">
           <i v-if="val?.icon" :class="val?.icon"></i>&nbsp;
           {{ val.title }}
         </div>
       </div>
+
+      <q-btn 
+        label="test"
+        @click.stop="$emit('change', val)"
+      />
     </div>
   </template>
   <script lang="ts">
@@ -19,7 +25,8 @@
     props: {
       row: {default: {}},
       col: {default: {}},
-      val: {default: {}}
+      val: {default: {}}, 
+      vIf: {default: null}
     },
     computed: {
       background(){
