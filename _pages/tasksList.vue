@@ -128,19 +128,15 @@
 <script>
 //Components
 import dynamicList from 'modules/qsite/_components/master/dynamicList';
-import statusComponent from 'modules/qtask/_components/status';
-import dateComponent from 'modules/qtask/_components/date';
 import timeLogsComponent from 'modules/qtask/_components/timeLogs';
 import taskComponent from 'modules/qtask/_components/task';
 import moment from 'moment';
-
 const dateFormat = 'YYYY/MM/DD';
 
 export default {
   props: {},
   components: {
     dynamicList,
-    statusComponent,
     timeLogsComponent,
     taskComponent
   },
@@ -261,7 +257,15 @@ export default {
             {
               name: 'startDate', label: this.$tr('isite.cms.form.startDate'), field: 'startDate', align: 'center',
               style: 'padding: 0 5px',
-              component: dateComponent,
+              contentType: (row) => {
+                return {
+                  template: 'date',
+                  props: {
+                    date: row.startDate,
+                    expirationDate: moment(),
+                  }
+                }
+              },
               dynamicField: {
                 value: '',
                 type: 'date',
@@ -273,7 +277,15 @@ export default {
             {
               name: 'endDate', label: this.$tr('isite.cms.form.endDate'), field: 'endDate', align: 'center',
               style: 'padding: 0 5px',
-              component: dateComponent,
+              contentType: (row) => {
+                return {
+                  template: 'date',
+                  props: {
+                    date: row.endDate,
+                    expirationDate: moment(),
+                  }
+                }
+              },
               dynamicField: {
                 value: '',
                 type: 'date',
@@ -291,18 +303,14 @@ export default {
               style: 'padding: 0 0 0 5px',
               //classes: 'padding-none',
               //headerClasess: 'padding-none',
-              component: (row) => {
+              contentType: (row) => {
                 return {
-                  template: statusComponent,
+                  template: 'colorCell',
                   props: {
-                    vIf: row.statusId == 1,
-                    val:  row.statusId == 1 ? {title: 'title custom', color: '#000000' } : row.status
-                  },
-                  events: {
-                    change: (e) => {
-                      console.log(e)
-                    }
-                  } 
+                    label: row.status.title,
+                    color: row.status.color,
+                    icon: row.status.icon
+                  }
                 }
               },
               dynamicField: {
@@ -328,7 +336,16 @@ export default {
             {
               name: 'priority', label: this.$tr('itask.cms.form.priority'), field: 'priority', align: 'center',
               style: 'padding: 0 5px 0 0',
-              component: statusComponent,
+              contentType: (row) => {
+                return {
+                  template: 'colorCell',
+                  props: {
+                    label: row.priority.title,
+                    color: row.priority.color,
+                    icon: row.priority.icon
+                  }
+                }
+              },
               dynamicField: {
                 value: [],
                 type: 'select',
