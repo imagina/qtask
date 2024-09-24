@@ -549,8 +549,8 @@ export default {
   },
   computed: {
     dynamicListTitle() {
-      const from = moment(this.date.from).format('MMM Do');
-      const to = moment(this.date.to).format('MMM Do');
+      const from = moment(new Date(this.date.from)).format('MMM Do');
+      const to = moment(new Date(this.date.to)).format('MMM Do');
       return `${this.date.title}:  ${from} - ${to}`;
     }
 
@@ -579,22 +579,22 @@ export default {
     },
     goToPrevious() {
       //next week
-      const from = moment(this.date.from).subtract(1, 'weeks').startOf('week').format(dateFormat);
-      const to = moment(this.date.from).subtract(1, 'weeks').endOf('week').format(dateFormat);
+      const from = moment(new Date(this.date.from)).subtract(1, 'weeks').startOf('week').format(dateFormat);
+      const to = moment(new Date(this.date.from)).subtract(1, 'weeks').endOf('week').format(dateFormat);
       const title = this.$tr('itask.cms.week');
       this.setDate(from, to, title);
     },
     goToNext() {
       //next week
-      const from = moment(this.date.from).add(1, 'weeks').startOf('week').format(dateFormat);
-      const to = moment(this.date.to).add(1, 'weeks').endOf('week').format(dateFormat);
+      const from = moment(new Date(this.date.from)).add(1, 'weeks').startOf('week').format(dateFormat);
+      const to = moment(new Date(this.date.to)).add(1, 'weeks').endOf('week').format(dateFormat);
       const title = this.$tr('itask.cms.week');
       this.setDate(from, to, title);
     },
     setDateRange(value) {
       if (value != null && value?.from && value?.to) {
-        const from = moment(value.from).format(dateFormat);
-        const to = moment(value.to).format(dateFormat);
+        const from = moment(new Date(value.from)).format(dateFormat);
+        const to = moment(new Date(value.to)).format(dateFormat);
         if (from != this.date.from || to != this.date.to) {
           this.setDate(from, to, value.label);
           this.$refs.titleModal.hide();
