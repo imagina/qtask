@@ -559,7 +559,6 @@ export default {
     init() {
     },
     setDate(from, to, title) {
-      console.warn('__>', {from, to})
       this.date = { from, to, title };
       this.dateRangeFilter.value = {
         type: 'customRange',
@@ -593,14 +592,10 @@ export default {
       this.setDate(from, to, title);
     },
     setDateRange(value) {
-      console.log(1)
       if (value != null && value?.from && value?.to) {
-        console.log(2)
         const from = moment(new Date(value.from)).format(dateFormat);
-        console.log(new Date(value.from))
         const to = moment(new Date(value.to)).format(dateFormat);
         if (from != this.date.from || to != this.date.to) {
-          console.log(3)
           this.setDate(from, to, value.label);
           this.$refs.titleModal.hide();
         }
