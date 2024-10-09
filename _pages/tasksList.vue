@@ -301,8 +301,6 @@ export default {
             {
               name: 'status', label: this.$tr('isite.cms.form.status'), field: 'status', align: 'center',
               style: 'padding: 0 0 0 5px',
-              //classes: 'padding-none',
-              //headerClasess: 'padding-none',
               contentType: (row) => {
                 return {
                   template: 'colorCell',
@@ -319,7 +317,6 @@ export default {
                 props: {
                   label: this.$tr('isite.cms.form.status'),
                   useInput: true,
-                  clearable: true,
                   rules: [
                     val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
                   ]
@@ -353,7 +350,6 @@ export default {
                 props: {
                   label: this.$tr('itask.cms.form.priority'),
                   useInput: true,
-                  clearable: true,
                   rules: [
                     val => !!val?.length || this.$tr('isite.cms.message.fieldRequired')
                   ]
