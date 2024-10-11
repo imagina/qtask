@@ -71,7 +71,7 @@
             <q-btn
               text-color="primary" style="border: 1px solid rgba(0, 13, 71, 0.15)"
               class="q-ml-sm btn-small" icon="fa-regular fa-chevron-right"
-              dense rounded unelevated @click="goToPrevious()" padding="8px"
+              dense rounded unelevated @click="goToNext()" padding="8px"
             >
               <q-tooltip anchor="bottom middle" self="top middle">
                 {{ $tr('itask.cms.nextWeek') }}
