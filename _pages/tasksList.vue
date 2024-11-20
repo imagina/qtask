@@ -496,11 +496,11 @@ export default {
           return new Promise((resolve, reject) => {
             //check startDate should be minor than dateFormat
             if (row.description == '') reject();
-            if (moment(row.startDate).format(dateFormat) > moment(row.endDate).format(dateFormat)) {
+            if (moment(new Date(row.startDate)).format(dateFormat) > moment(new Date(row.endDate)).format(dateFormat)) {
               this.$alert.error({ message: this.$tr('itask.cms.date.error') });
               reject();
             } else {
-              resolve(val);
+              resolve(row);
             }
           });
         },
